@@ -4,199 +4,199 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;font-size:14px;background:#EFE7D7}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;font-size:14px;background:#EDF1E7}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>長者遊戲簡報生成器</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap">
 
 <style>
+/* ===== 大地青：鼠尾草霧白底、青苔墨字、陶土與沙金點綴 ===== */
 :root{
-  --ground:#EFE7D7;
-  --surface:#FFFDF8;
-  --surface-2:#F7F0E1;
-  --line:#DCCFB4;
-  --line-soft:#E8DFC9;
-  --ink:#12343B;
-  --ink-2:#4E6A70;
-  --ink-3:#8A8168;
-  --teal:#028090;
-  --teal-deep:#015E6B;
-  --orange:#E8552D;
-  --amber:#F4A93C;
-  --shadow:0 1px 2px rgba(58,44,26,.07), 0 10px 26px -14px rgba(58,44,26,.30);
-  --radius:14px;
+  --ground:#EDF1E7;
+  --surface:#FBFCF8;
+  --surface-2:#F2F5EC;
+  --line:#CCD6C3;
+  --line-soft:#E0E7D7;
+  --ink:#213830;
+  --ink-2:#4B6257;
+  --ink-3:#768A7C;
+  --teal:#3B8574;
+  --teal-deep:#2B6A5B;
+  --teal-soft:#DCEBE3;
+  --clay:#BC7448;
+  --sand:#D7AC63;
+  --on-teal:#FFFFFF;
+  --shadow:0 1px 2px rgba(33,56,48,.06), 0 14px 32px -18px rgba(33,56,48,.32);
+  --radius:18px;
   --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   --serif:"Noto Serif TC","Songti TC",serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --ground:#191510;
-    --surface:#241F18;
-    --surface-2:#1F1B15;
-    --line:#453A2C;
-    --line-soft:#352E24;
-    --ink:#F3EADA;
-    --ink-2:#C3B49B;
-    --ink-3:#9A8C76;
-    --teal:#4FC3D4;
-    --teal-deep:#7FDCEA;
-    --orange:#FF7A52;
-    --amber:#FFC266;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.7);
+    --ground:#121915; --surface:#19221D; --surface-2:#16201B; --line:#31423A; --line-soft:#26332D;
+    --ink:#E6EEE5; --ink-2:#B3C3B6; --ink-3:#8A9C8F; --teal:#79C1AC; --teal-deep:#9AD6C4; --teal-soft:#21352E;
+    --clay:#E19F78; --sand:#E5C283; --on-teal:#0F1D18;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -16px rgba(0,0,0,.7);
   }
 }
 :root[data-theme="dark"]{
-  --ground:#191510;
-  --surface:#241F18;
-  --surface-2:#1F1B15;
-  --line:#453A2C;
-  --line-soft:#352E24;
-  --ink:#F3EADA;
-  --ink-2:#C3B49B;
-  --ink-3:#9A8C76;
-  --teal:#4FC3D4;
-  --teal-deep:#7FDCEA;
-  --orange:#FF7A52;
-  --amber:#FFC266;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.7);
+  --ground:#121915; --surface:#19221D; --surface-2:#16201B; --line:#31423A; --line-soft:#26332D;
+  --ink:#E6EEE5; --ink-2:#B3C3B6; --ink-3:#8A9C8F; --teal:#79C1AC; --teal-deep:#9AD6C4; --teal-soft:#21352E;
+  --clay:#E19F78; --sand:#E5C283; --on-teal:#0F1D18;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -16px rgba(0,0,0,.7);
 }
 
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--ground); color:var(--ink);
-  font-family:var(--sans); font-size:16px; line-height:1.6;
+  font-family:var(--sans); font-size:16px; line-height:1.65;
   -webkit-font-smoothing:antialiased;
 }
-.wrap{position:relative; z-index:2; max-width:1180px; margin:-26px auto 0; padding-inline:20px; padding-block:0 64px}
+.wrap{position:relative; z-index:2; max-width:1200px; margin:-34px auto 0; padding-inline:20px; padding-block:0 64px}
 h1,h2,h3{font-family:var(--serif); font-weight:900; text-wrap:balance; margin:0}
 
-/* ---------- 撕紙標頭 ---------- */
-body::before{
-  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.42;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.2'/%3E%3C/svg%3E");
-}
+/* ---------- 標頭：青山遠景 ---------- */
 .hero{
-  position:relative; z-index:1; padding:32px 0 62px; color:#fff;
-  background:linear-gradient(150deg,#0C2329 0%,#12343B 46%,#025C69 100%);
-  clip-path:polygon(0% 0%, 100% 0%, 100% 88%, 100.00% 86.99%, 97.70% 87.40%, 95.73% 86.55%, 93.26% 87.47%, 91.24% 87.49%, 89.66% 86.00%, 87.87% 86.25%, 86.56% 87.13%, 84.99% 86.33%, 83.72% 87.82%, 81.34% 88.95%, 79.15% 87.55%, 77.43% 87.54%, 76.04% 88.90%, 74.25% 87.86%, 71.74% 86.74%, 69.06% 86.60%, 66.98% 86.13%, 65.00% 85.19%, 63.74% 86.29%, 62.17% 87.13%, 60.63% 88.53%, 58.00% 89.30%, 55.58% 89.54%, 53.21% 88.41%, 51.25% 89.39%, 49.73% 90.66%, 47.11% 90.39%, 45.32% 90.24%, 43.51% 91.72%, 41.69% 90.31%, 40.34% 90.96%, 37.55% 90.95%, 35.56% 91.10%, 33.17% 90.27%, 30.99% 90.43%, 28.80% 89.48%, 27.32% 89.02%, 24.64% 88.56%, 22.49% 87.98%, 21.12% 86.68%, 18.62% 87.51%, 16.82% 88.06%, 14.54% 89.26%, 11.80% 88.98%, 9.02% 90.36%, 6.88% 91.51%, 4.89% 91.14%, 3.30% 92.00%, 1.84% 90.71%, 0% 89%);
+  position:relative; z-index:1; padding:40px 0 96px; color:#fff; overflow:hidden;
+  background:
+    radial-gradient(120% 90% at 85% 0%, rgba(215,172,99,.30) 0%, transparent 55%),
+    linear-gradient(160deg,#24493F 0%,#3B7566 52%,#6F9E86 100%);
 }
-.hero-in{max-width:1180px; margin:0 auto; padding-inline:20px}
+.hills{position:absolute; left:0; right:0; bottom:-1px; width:100%; height:90px; display:block}
+.hills .far{fill:#9CBFA6; opacity:.45}
+.hills .mid{fill:#C9DCC4; opacity:.55}
+.hills .near{fill:var(--ground)}
+.hero-in{position:relative; max-width:1200px; margin:0 auto; padding-inline:20px}
 .kraft{
-  display:inline-block; background:var(--amber); color:#26170A;
-  font-size:12px; font-weight:900; letter-spacing:.22em; padding:7px 16px 8px;
-  transform:rotate(-1.2deg); clip-path:polygon(0% 0%, 0.00% 7.47%, 12.19% 9.54%, 25.79% 8.88%, 39.25% 0.35%, 49.51% 11.32%, 61.05% 10.81%, 68.84% 5.63%, 77.57% 6.53%, 88.58% 0.16%, 97.10% 3.35%, 100% 0%, 100% 100%, 100.00% 97.19%, 91.88% 97.57%, 83.91% 95.41%, 76.02% 88.02%, 62.92% 90.51%, 54.42% 99.79%, 41.31% 91.47%, 27.58% 94.47%, 15.83% 90.46%, 2.25% 96.29%, 0% 100%);
+  display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.14); color:#F4ECD8;
+  border:1px solid rgba(255,255,255,.28); border-radius:999px;
+  font-size:12.5px; font-weight:700; letter-spacing:.18em; padding:6px 14px;
 }
-.hero h1{color:#fff; font-size:clamp(30px,4.8vw,46px); line-height:1.12; margin-top:16px}
-.hero h1 em{font-style:normal; color:var(--amber)}
-.hero p{margin:12px 0 0; color:#CFE3E6; max-width:62ch; font-size:16px; line-height:1.6}
+.kraft::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--sand)}
+.hero h1{color:#fff; font-size:clamp(30px,4.8vw,48px); line-height:1.15; margin-top:16px; letter-spacing:.02em}
+.hero h1 em{font-style:normal; color:#F1D49A}
+.hero p{margin:14px 0 0; color:#DCEBE2; max-width:60ch; font-size:16px; line-height:1.75}
 .hero p b{color:#fff; font-weight:700}
+.games{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0; padding:0; list-style:none}
+.games li{font-size:13.5px; padding:5px 12px; border-radius:999px; background:rgba(16,40,33,.28); color:#EAF3EC; border:1px solid rgba(255,255,255,.16)}
+.games li b{color:#F1D49A; margin-right:4px}
 
 /* ---------- layout ---------- */
-.console{display:grid; grid-template-columns:330px minmax(0,1fr); gap:22px; align-items:start}
-@media (max-width:880px){ .console{grid-template-columns:1fr} }
-
-.panel{background:var(--surface); border:2px solid var(--line-soft); border-radius:18px; box-shadow:var(--shadow)}
+.console{display:grid; grid-template-columns:340px minmax(0,1fr); gap:22px; align-items:start}
+.panel{background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius); box-shadow:var(--shadow)}
 .panel > header{
   display:flex; align-items:baseline; gap:10px; justify-content:space-between;
-  padding:14px 18px; border-bottom:1px solid var(--line-soft);
+  padding:16px 20px; border-bottom:1px solid var(--line-soft);
 }
-.panel > header h2{font-size:17px}
+.panel > header h2{font-size:18px; color:var(--ink)}
 .panel > header .hint{font-size:12.5px; color:var(--ink-3)}
-.panel .body{padding:18px}
+.panel .body{padding:20px}
 
-.rail{position:sticky; top:20px}
-@media (max-width:880px){ .rail{position:static} }
+.rail{position:sticky; top:16px; max-height:calc(100vh - 32px); display:flex; flex-direction:column}
+.rail .body{overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--line) transparent}
+.preview-panel{min-width:0}
 
 /* ---------- form ---------- */
-.field + .field{margin-top:20px}
+.field + .field{margin-top:22px}
+#matchOnly, #missingOnly, #twinOnly, #patternOnly, #switchField, #themeField, #shapeField, #imageField{margin-top:22px}
 .label{
   display:flex; justify-content:flex-start; align-items:center; gap:8px;
-  font-size:12px; font-weight:900; letter-spacing:.2em; color:var(--ink-3);
-  text-transform:uppercase; margin-bottom:9px;
+  font-size:13px; font-weight:700; letter-spacing:.14em; color:var(--ink-2); margin-bottom:10px;
 }
-.label::before{content:""; width:14px; height:3px; background:var(--amber); border-radius:2px; margin-right:-2px; align-self:center; order:-1}
-.label b{margin-left:auto; font-family:var(--sans); font-size:19px; font-weight:900; color:var(--ink); letter-spacing:0; font-variant-numeric:tabular-nums}
+.label::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--teal); flex:none}
+.label b{margin-left:auto; font-size:20px; font-weight:900; color:var(--teal-deep); letter-spacing:0; font-variant-numeric:tabular-nums}
 
-.seg{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; background:var(--surface-2); padding:5px; border-radius:11px; border:1px solid var(--line-soft)}
+.seg{display:grid; grid-template-columns:repeat(3,1fr); gap:5px; background:var(--surface-2); padding:5px; border-radius:13px; border:1px solid var(--line-soft)}
 .seg button{
-  font:inherit; font-size:14px; font-weight:700; color:var(--ink-2);
-  background:transparent; border:0; border-radius:8px; padding:9px 4px; cursor:pointer;
+  font:inherit; font-size:15px; font-weight:700; color:var(--ink-2); min-height:42px;
+  background:transparent; border:0; border-radius:9px; padding:8px 4px; cursor:pointer; transition:background .15s, color .15s;
 }
-.seg button[aria-pressed="true"]{background:var(--ink); color:var(--surface)}
-.seg button:hover:not([aria-pressed="true"]){color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--teal); color:var(--on-teal); box-shadow:0 4px 12px -6px rgba(43,106,91,.7)}
+.seg button:hover:not([aria-pressed="true"]){color:var(--ink); background:var(--teal-soft)}
+.hint-s, .fhint{margin:9px 0 0; font-size:13.5px; color:var(--ink-3); line-height:1.6}
 
-.chips{display:flex; flex-wrap:wrap; gap:7px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
 .chip{
-  font:inherit; font-size:14px; font-weight:500; cursor:pointer;
-  padding:7px 13px; border-radius:999px; border:1px solid var(--line);
+  font:inherit; font-size:14.5px; font-weight:500; cursor:pointer; min-height:40px;
+  padding:7px 15px; border-radius:999px; border:1px solid var(--line);
   background:var(--surface); color:var(--ink-2);
 }
-.chip[aria-pressed="true"]{background:var(--teal); border-color:var(--teal); color:#fff; font-weight:700}
+.chip[aria-pressed="true"]{background:var(--teal-soft); border-color:var(--teal); color:var(--teal-deep); font-weight:700}
 .chip:hover:not([aria-pressed="true"]){border-color:var(--teal); color:var(--ink)}
 
-input[type=range]{width:100%; accent-color:var(--orange); height:26px}
-.ticks{display:flex; justify-content:space-between; font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums; margin-top:-4px}
+input[type=range]{width:100%; accent-color:var(--teal); height:32px; cursor:pointer}
+.ticks{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-3); font-variant-numeric:tabular-nums; margin-top:-4px}
+input[type=text]{
+  width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--surface);
+  border:1px solid var(--line); border-radius:11px; padding:10px 13px; min-height:44px;
+}
+input[type=text]:focus{border-color:var(--teal); outline:none; box-shadow:0 0 0 3px var(--teal-soft)}
+input[type=text]::placeholder{color:var(--ink-3)}
 
-.switch{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-top:1px solid var(--line-soft)}
-.switch:first-of-type{border-top:0}
-.switch .txt{font-size:14.5px}
-.switch .txt small{display:block; color:var(--ink-3); font-size:12.5px; line-height:1.45}
+.switch{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid var(--line-soft)}
+.switch:first-of-type{border-top:0; padding-top:0}
+.switch .txt{font-size:15px; font-weight:500}
+.switch .txt small{display:block; color:var(--ink-3); font-size:13px; line-height:1.5; font-weight:400}
 .toggle{
-  flex:none; width:50px; height:29px; border-radius:999px; border:1px solid var(--line);
+  flex:none; width:52px; height:30px; border-radius:999px; border:1px solid var(--line);
   background:var(--surface-2); position:relative; cursor:pointer; transition:background .18s, border-color .18s;
 }
-.toggle::after{content:""; position:absolute; inset:3px auto 3px 3px; width:21px; border-radius:50%; background:var(--ink-3); transition:transform .18s, background .18s}
+.toggle::after{content:""; position:absolute; inset:3px auto 3px 3px; width:22px; border-radius:50%; background:var(--ink-3); transition:transform .18s, background .18s}
 .toggle[aria-pressed="true"]{background:var(--teal); border-color:var(--teal)}
-.toggle[aria-pressed="true"]::after{transform:translateX(21px); background:#fff}
+.toggle[aria-pressed="true"]::after{transform:translateX(22px); background:var(--on-teal)}
 
 .btn{
-  font:inherit; font-weight:700; cursor:pointer; border-radius:11px;
-  padding:12px 18px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  font:inherit; font-weight:700; cursor:pointer; border-radius:12px; min-height:44px;
+  padding:11px 18px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:border-color .15s, background .15s, filter .15s;
 }
-.btn:hover{border-color:var(--ink-3)}
-.btn.primary{background:var(--orange); border-color:var(--orange); color:#fff; font-size:17px; padding:14px 20px}
-.btn.primary:hover{filter:brightness(1.06)}
+.btn:hover{border-color:var(--teal); background:var(--teal-soft)}
+.btn.primary{background:var(--teal); border-color:var(--teal); color:var(--on-teal); font-size:16.5px; padding:12px 22px}
+.btn.primary:hover{filter:brightness(1.07); background:var(--teal)}
+.btn.clay{background:var(--clay); border-color:var(--clay); color:#fff}
+.btn.clay:hover{filter:brightness(1.06); background:var(--clay)}
 .btn.wide{width:100%}
-.btn:disabled{opacity:.45; cursor:not-allowed}
-.btn.ghost{background:transparent}
-:focus-visible{outline:3px solid var(--amber); outline-offset:2px}
+.btn:disabled{opacity:.45; cursor:not-allowed; filter:none}
+.btn .sub{font-weight:500; font-size:12.5px; opacity:.85}
+:focus-visible{outline:3px solid var(--sand); outline-offset:2px}
 
 .themes{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
 .thchip{
-  display:flex; align-items:center; gap:9px; padding:8px 9px; cursor:pointer; font:inherit;
-  font-size:14px; font-weight:700; color:var(--ink-2); text-align:left;
+  display:flex; align-items:center; gap:9px; padding:8px 9px; cursor:pointer; font:inherit; min-height:48px;
+  font-size:14.5px; font-weight:700; color:var(--ink-2); text-align:left;
   border:1.5px solid var(--line); border-radius:12px; background:var(--surface);
 }
-.thchip[aria-pressed="true"]{border-color:var(--orange); box-shadow:0 0 0 2px rgba(232,85,45,.18); color:var(--ink)}
+.thchip[aria-pressed="true"]{border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-soft); color:var(--ink)}
 .thchip:hover:not([aria-pressed="true"]){border-color:var(--ink-3)}
-.sw{width:32px; height:32px; border-radius:9px; flex:none; position:relative; overflow:hidden; border:1px solid rgba(0,0,0,.2)}
+.sw{width:32px; height:32px; border-radius:9px; flex:none; position:relative; overflow:hidden; border:1px solid rgba(0,0,0,.18)}
 .sw i{position:absolute; left:4px; top:7px; width:17px; height:17px; border-radius:50%; display:block}
 .sw b{position:absolute; right:3px; bottom:4px; width:11px; height:11px; border-radius:3px; display:block}
-.hint-s{margin:9px 0 0; font-size:13px; color:var(--ink-3); line-height:1.5}
 
-.uploader{border:2px dashed var(--line); border-radius:12px; padding:16px; text-align:center; color:var(--ink-2); font-size:14px}
+.uploader{border:2px dashed var(--line); border-radius:14px; padding:18px; text-align:center; color:var(--ink-2); font-size:14.5px; background:var(--surface-2)}
 .uploader p{margin:0 0 10px}
 .mygrid{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
-.mygrid figure{margin:0; position:relative; width:52px; height:52px; border-radius:10px; overflow:hidden; border:1px solid var(--line); background:var(--surface-2)}
+.mygrid figure{margin:0; position:relative; width:56px; height:56px; border-radius:11px; overflow:hidden; border:1px solid var(--line); background:var(--surface-2)}
 .mygrid img{width:100%; height:100%; object-fit:contain}
-.mygrid button{position:absolute; top:0; right:0; width:19px; height:19px; border:0; border-radius:0 0 0 7px; background:var(--ink); color:#fff; font-size:12px; line-height:19px; cursor:pointer; padding:0}
+.mygrid button{position:absolute; top:0; right:0; width:24px; height:24px; border:0; border-radius:0 0 0 9px; background:var(--ink); color:var(--surface); font-size:13px; line-height:24px; cursor:pointer; padding:0}
 
 /* ---------- preview ---------- */
-.toolbar{display:flex; flex-wrap:wrap; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line-soft); background:var(--surface-2); border-radius:var(--radius) var(--radius) 0 0}
-.toolbar .btn{padding:10px 15px; font-size:14.5px}
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(285px,1fr)); gap:14px; padding:18px}
+.toolbar{display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line-soft); background:var(--surface-2); border-radius:var(--radius) var(--radius) 0 0}
+.toolbar .btn{font-size:15px}
+.toolbar .meta{margin-left:auto; font-size:13px; color:var(--ink-3)}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; padding:18px}
 .thumb{
-  background:var(--surface-2); border:1px solid var(--line-soft); border-radius:12px; padding:10px 10px 8px;
-  cursor:pointer; text-align:left; font:inherit; color:inherit; transition:border-color .15s, transform .15s;
+  background:var(--surface-2); border:1px solid var(--line-soft); border-radius:14px; padding:10px 10px 9px;
+  cursor:pointer; text-align:left; font:inherit; color:inherit; transition:border-color .15s, transform .15s, box-shadow .15s;
 }
-.thumb:hover{border-color:var(--teal); transform:translateY(-2px)}
-.thumb .no{font-size:11.5px; font-weight:700; letter-spacing:.12em; color:var(--ink-3); display:flex; justify-content:space-between; align-items:center}
-.thumb .no .ans{font-size:16px; letter-spacing:0}
-.thumb .pair{display:flex; align-items:center; gap:6px; margin-top:8px; padding:9px 10px; border-radius:10px; background:var(--stage,transparent)}
+.thumb:hover{border-color:var(--teal); transform:translateY(-2px); box-shadow:0 10px 20px -14px rgba(33,56,48,.5)}
+.thumb .no{font-size:12.5px; font-weight:700; letter-spacing:.1em; color:var(--ink-3); display:flex; justify-content:space-between; align-items:center}
+.thumb .no .ans{font-size:16px; letter-spacing:0; display:inline-flex; align-items:center; gap:4px}
+.thumb .no .ans::before{content:"答"; font-size:11px; color:var(--ink-3); letter-spacing:0}
+.thumb .pair{display:flex; align-items:center; gap:6px; margin-top:8px; padding:10px; border-radius:11px; background:var(--stage,transparent)}
 .thumb .pair .disc{flex:1}
-.thumb .pair .sep{font-size:12px; color:var(--ink-3)}
+.thumb .pair .sep{font-size:12px; color:var(--txt-2,var(--ink-3))}
 
 .disc{position:relative; aspect-ratio:1; border-radius:50%; background:var(--card,var(--surface)); border:2px solid var(--card-line,var(--ink)); overflow:hidden}
 .sym{position:absolute; display:flex; align-items:center; justify-content:center; line-height:1; user-select:none}
@@ -204,24 +204,55 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
 .sym img{width:100%; height:100%; object-fit:contain; display:block}
 .sym.ghost{visibility:hidden}
 .board{display:block; position:relative; aspect-ratio:16/9; border-radius:10px; background:var(--card,var(--surface)); border:2px solid var(--card-line,var(--ink)); overflow:hidden}
-.thumb .solo{display:block; margin-top:8px; padding:9px 10px; border-radius:10px; background:var(--stage,transparent)}
+.thumb .solo{display:block; margin-top:8px; padding:10px; border-radius:11px; background:var(--stage,transparent)}
 
 .prow{display:flex; align-items:center; justify-content:center; gap:5px; margin-top:9px;
-  padding:9px 8px; border-radius:10px; background:var(--stage,#0A1F25)}
-.thumb .fys-cell{width:30px; border-width:2px; border-radius:7px; box-shadow:none;
-  background:var(--card,#FBF4E6); border-color:var(--card-line,#0A1F25)}
+  padding:12px 9px; border-radius:11px; background:var(--stage,#1F3A33)}
+.thumb .fys-cell{flex:1 1 0; width:auto; max-width:46px; border-width:2px; border-radius:8px; box-shadow:none;
+  background:var(--card,#F6F1E4); border-color:var(--card-line,#1F3A33)}
 .thumb .fys-cell.blank{font-size:15px; border-width:2px; border-style:dashed;
-  background:var(--blank,#14323B); border-color:var(--hi,#F4A93C); color:var(--hi,#F4A93C)}
-.empty{padding:46px 20px; text-align:center; color:var(--ink-3)}
-.note{font-size:13px; color:var(--ink-3); padding:0 18px 18px; margin:0}
-.note code{font-family:var(--sans)}
+  background:var(--blank,#28473F); border-color:var(--hi,#E3B76A); color:var(--hi,#E3B76A)}
+.empty{padding:46px 20px; text-align:center; color:var(--ink-3); grid-column:1/-1}
+.note{font-size:13.5px; color:var(--ink-3); padding:0 18px 18px; margin:0}
 
 .status{
   position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(12px);
-  background:var(--ink); color:#fff; padding:12px 20px; border-radius:999px; font-size:14.5px; font-weight:500;
+  background:var(--ink); color:var(--surface); padding:12px 20px; border-radius:999px; font-size:15px; font-weight:500;
   box-shadow:0 12px 34px -12px rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:60; max-width:90vw; text-align:center;
 }
 .status.on{opacity:1; transform:translateX(-50%) translateY(0)}
+
+.foot{max-width:1200px; margin:0 auto; padding:0 20px 40px; font-size:13px; color:var(--ink-3); text-align:center}
+
+/* ---------- 平板／手機 ---------- */
+@media (max-width:880px){
+  .console{grid-template-columns:1fr; gap:16px}
+  .rail{position:static; max-height:none}
+  .rail .body{overflow:visible}
+  .hero{padding:28px 0 84px}
+  .wrap{margin-top:-28px; padding-inline:14px; padding-bottom:120px}
+  .hero-in{padding-inline:16px}
+  /* 播放、下載鈕固定在畫面底部，設定再長也隨手可按 */
+  .toolbar{
+    position:fixed; left:0; right:0; bottom:0; z-index:50; margin:0;
+    display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:8px;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    border-radius:18px 18px 0 0; border:1px solid var(--line-soft); border-bottom:0;
+    background:color-mix(in srgb, var(--surface) 94%, transparent);
+    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    box-shadow:0 -10px 30px -18px rgba(33,56,48,.45);
+  }
+  .toolbar .btn{padding:8px 6px; font-size:14px; flex-direction:column; gap:0; line-height:1.25; min-height:52px}
+  .toolbar .meta{display:none}
+  .status{bottom:96px}
+  .grid{grid-template-columns:1fr 1fr; gap:10px; padding:12px}
+  .preview-panel > .ph{padding:14px 16px; border-bottom:1px solid var(--line-soft)}
+}
+@media (min-width:881px){ .preview-panel > .ph{display:none} }
+@media (max-width:520px){
+  .grid{grid-template-columns:1fr}
+  .panel .body{padding:16px}
+}
 
 @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important} }
 </style>
@@ -229,9 +260,9 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
 <style id="playerCSS">
 /* ===== 播放模式（生成器與離線檔共用） ===== */
 .fys{
-  --stage:#0A1F25; --card:#FBF4E6; --card-line:#0A1F25;
-  --hi:#F4A93C; --hi2:#E8552D; --txt:#F2F7F7; --txt-2:#9FBCC2;
-  --line2:#2E5560; --btn:#1D3F49; --btnh:#27505C; --blank:#14323B; --arrow:#3C6A76; --goTxt:#26170A;
+  --stage:#1F3A33; --card:#F6F1E4; --card-line:#1F3A33;
+  --hi:#E3B76A; --hi2:#D07A4B; --txt:#EEF4EC; --txt-2:#A9C3B6;
+  --line2:#3E6157; --btn:#2C4C43; --btnh:#365B51; --blank:#28473F; --arrow:#5E8579; --goTxt:#2A1C0E;
   position:fixed; inset:0; z-index:100; background:var(--stage); color:var(--txt);
   font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   display:flex; flex-direction:column; overscroll-behavior:none;
@@ -263,7 +294,7 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
 .fys-split .q{
   width:clamp(44px,5vw,64px); height:clamp(44px,5vw,64px); border-radius:50%;
   background:var(--hi2); color:var(--card); display:flex; align-items:center; justify-content:center;
-  font-size:clamp(24px,2.8vw,36px); font-weight:900; flex:none; box-shadow:0 8px 22px -8px rgba(232,85,45,.9);
+  font-size:clamp(24px,2.8vw,36px); font-weight:900; flex:none; box-shadow:0 8px 22px -8px rgba(0,0,0,.6);
 }
 .fys-sym{position:absolute; display:flex; align-items:center; justify-content:center; line-height:1; user-select:none; transition:opacity .45s ease, filter .45s ease}
 .fys-sym svg{width:100%; height:100%; display:block}
@@ -272,7 +303,7 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
 .fys.revealed .fys-sym.hit{opacity:1; filter:none; animation:fys-pop .75s cubic-bezier(.22,1.3,.36,1) both}
 .fys-sym.hit::before{
   content:""; position:absolute; inset:-16%; border-radius:50%; border:5px solid var(--hi2);
-  opacity:0; box-shadow:0 0 0 6px rgba(244,169,60,.35);
+  opacity:0; box-shadow:0 0 0 6px color-mix(in srgb, var(--hi) 38%, transparent);
 }
 .fys.revealed .fys-sym.hit::before{animation:fys-ring .75s .12s ease-out both}
 @keyframes fys-pop{0%{transform:scale(var(--s,1)) rotate(var(--r,0deg))}45%{transform:scale(calc(var(--s,1)*1.45)) rotate(var(--r,0deg))}100%{transform:scale(calc(var(--s,1)*1.22)) rotate(var(--r,0deg))}}
@@ -324,7 +355,7 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
 .fys-opt:hover .fys-cell{border-color:var(--hi)}
 .fys.revealed .fys-opt{opacity:.22}
 .fys.revealed .fys-opt.hit{opacity:1; transform:translateY(-6px)}
-.fys.revealed .fys-opt.hit .fys-cell{border-color:var(--hi2); box-shadow:0 0 0 7px rgba(244,169,60,.4)}
+.fys.revealed .fys-opt.hit .fys-cell{border-color:var(--hi2); box-shadow:0 0 0 7px color-mix(in srgb, var(--hi) 42%, transparent)}
 .fys.revealed .fys-opt.hit .lab{color:var(--hi)}
 .fys-rule{font-size:clamp(16px,2vw,27px); font-weight:700; color:var(--hi); margin:0; text-align:center;
   flex:1 1 100%; order:-1; padding-bottom:2px; min-height:1.4em}
@@ -353,8 +384,15 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
   .fys-col{gap:4px}
   .fys-board{width:min(94vw, calc((100vh - 250px) * 16 / 9))}
   .fys-split{flex-direction:row; width:100%; justify-content:center; gap:12px}
-  .fys-split .bar{width:auto; height:3px; flex:1; min-height:0; background:repeating-linear-gradient(to right,#2E5560 0 12px,transparent 12px 24px)}
+  .fys-split .bar{width:auto; height:3px; flex:1; min-height:0; background:repeating-linear-gradient(to right,var(--line2) 0 12px,transparent 12px 24px)}
   .fys-dots{display:none}
+  .fys-top{padding:10px 12px; gap:8px}
+  .fys-no{font-size:20px; white-space:nowrap}
+  .fys-tools{gap:6px}
+  .fys-tools button{font-size:13px; padding:7px 9px; white-space:nowrap}
+  .fys-bottom{display:grid; grid-template-columns:1fr 1.35fr 1fr; gap:8px; padding:8px 12px calc(14px + env(safe-area-inset-bottom))}
+  .fys-say, .fys-rule{grid-column:1/-1}
+  .fys-btn{font-size:16px; padding:13px 6px; white-space:nowrap}
   .fys-stage.pat{flex-direction:column}
   .fys-cell{width:min(17vw,11vh)}
   .fys-opt .fys-cell{width:min(19vw,12vh)}
@@ -725,10 +763,21 @@ window.DeckPlayer = (function () {
 
 <header class="hero">
   <div class="hero-in">
-    <span class="kraft">免費網頁工具</span>
+    <span class="kraft">免費網頁工具・長者動腦課</span>
     <h1>長者<em>遊戲簡報</em>生成器</h1>
-    <p>四種動腦遊戲：<b>規律接龍</b>練歸納推理，<b>找一樣</b>練視覺搜尋，<b>找缺少</b>練比對與記憶，<b>找相同</b>在同一個畫面裡找出一對。選素材、調難度、挑一個簡報風格，一鍵產出整堂的上課簡報；可全螢幕播放，也能匯出 PowerPoint 或離線 HTML 帶到教室。</p>
+    <p>選素材、調難度、挑一個簡報風格，一鍵產出整堂課的動腦簡報。可以直接全螢幕播放，也能下載 PowerPoint（文字可以自己改）或離線網頁帶到教室。</p>
+    <ul class="games">
+      <li><b>規律接龍</b>歸納推理</li>
+      <li><b>找一樣</b>視覺搜尋</li>
+      <li><b>找缺少</b>比對與記憶</li>
+      <li><b>找相同</b>視覺掃描</li>
+    </ul>
   </div>
+  <svg class="hills" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+    <path class="far" d="M0 58 C120 30 210 26 330 44 S560 70 700 40 S960 6 1100 30 S1340 60 1440 36 V90 H0Z"/>
+    <path class="mid" d="M0 70 C160 50 260 58 400 66 S650 52 820 62 S1100 78 1240 60 S1400 54 1440 58 V90 H0Z"/>
+    <path class="near" d="M0 80 C200 70 380 84 560 78 S900 70 1080 80 S1340 84 1440 76 V90 H0Z"/>
+  </svg>
 </header>
 
 <div class="wrap">
@@ -843,6 +892,12 @@ window.DeckPlayer = (function () {
           <div class="ticks"><span>4</span><span>30</span></div>
         </div>
 
+        <div class="field">
+          <label class="label" for="titleIn">簡報標題（封面頁）</label>
+          <input type="text" id="titleIn" maxlength="40" placeholder="">
+          <p class="fhint">留空會自動用遊戲名稱＋素材。PPT 裡的所有文字下載後都還能再改。</p>
+        </div>
+
         <div class="field" id="switchField" hidden>
           <div class="switch">
             <span class="txt">圖案旋轉<small>每個圖案隨機轉向，長者要多繞一圈才找得到</small></span>
@@ -855,16 +910,18 @@ window.DeckPlayer = (function () {
         </div>
 
         <div class="field">
-          <button type="button" class="btn primary wide" id="genBtn">重新生成題目</button>
+          <button type="button" class="btn wide" id="genBtn">↻ 重新出一組題目</button>
         </div>
       </div>
     </section>
 
-    <section class="panel" aria-label="題目預覽">
+    <section class="panel preview-panel" aria-label="題目預覽">
+      <header class="ph"><h2>題目預覽</h2></header>
       <div class="toolbar">
         <button type="button" class="btn primary" id="playBtn">▶ 開始播放</button>
-        <button type="button" class="btn" id="pptBtn">匯出 PowerPoint</button>
-        <button type="button" class="btn" id="htmlBtn">下載離線 HTML</button>
+        <button type="button" class="btn" id="pptBtn">下載 PPT <span class="sub">文字可改</span></button>
+        <button type="button" class="btn" id="htmlBtn">離線網頁 <span class="sub">免網路播</span></button>
+        <span class="meta" id="metaInfo"></span>
       </div>
       <div class="grid" id="previewGrid"></div>
       <p class="note" id="previewNote"></p>
@@ -894,6 +951,14 @@ window.DeckPlayer = (function () {
     { id: 'face',   name: '表情',     list: '😀😃😄😁😆😅😂🙂😉😊😇🥰😍🤩😘😋😜🤪🤗🤔🤨😐😴😎' }
   ];
   var SLIDE_THEMES = [
+    { id: 'moss', name: '青苔大地', note: '深青苔底、米白卡、沙金重點，沉穩清幽，投影不刺眼',
+      v: { stage: '#1F3A33', card: '#F6F1E4', 'card-line': '#1F3A33', hi: '#E3B76A', hi2: '#D07A4B',
+           txt: '#EEF4EC', 'txt-2': '#A9C3B6', line2: '#3E6157', btn: '#2C4C43', btnh: '#365B51',
+           blank: '#28473F', arrow: '#5E8579', goTxt: '#2A1C0E' } },
+    { id: 'mist', name: '晨霧山嵐', note: '淺鼠尾草底、白卡青字，清爽明亮，教室開燈也清楚',
+      v: { stage: '#E7EEE2', card: '#FFFFFF', 'card-line': '#2E4A40', hi: '#9A5A2B', hi2: '#C0582E',
+           txt: '#22382F', 'txt-2': '#58705F', line2: '#BFCDB8', btn: '#D8E3CF', btnh: '#CAD8C0',
+           blank: '#DCE6D3', arrow: '#8EA391', goTxt: '#FFFFFF' } },
     { id: 'ink', name: '墨青夜', note: '深底米卡，投影對比最高，關燈不刺眼',
       v: { stage: '#0A1F25', card: '#FBF4E6', 'card-line': '#0A1F25', hi: '#F4A93C', hi2: '#E8552D',
            txt: '#F2F7F7', 'txt-2': '#9FBCC2', line2: '#2E5560', btn: '#1D3F49', btnh: '#27505C',
@@ -938,7 +1003,7 @@ window.DeckPlayer = (function () {
     imageOrder: [],
     imageStyle: 'round',
     game: 'pattern',
-    slideTheme: 'ink',
+    slideTheme: 'moss',
     level: 2,
     total: 6,
     nMiss: 6,
@@ -1228,6 +1293,8 @@ window.DeckPlayer = (function () {
       return;
     }
     $('playBtn').disabled = $('pptBtn').disabled = $('htmlBtn').disabled = false;
+    $('titleIn').placeholder = autoTitle();
+    $('metaInfo').textContent = '共 ' + deck.questions.length + ' 題・點縮圖從該題開始播';
     if (deck.theme) {
       Object.keys(deck.theme).forEach(function (k) { grid.style.setProperty('--' + k, deck.theme[k]); });
     }
@@ -1435,56 +1502,79 @@ window.DeckPlayer = (function () {
     q.seq.forEach(function (c, i) {
       var cx = sx + i * (cs + gap);
       drawCell(ctx, cx, sy, cs, c);
-      ctx.fillStyle = TH.arrow; ctx.font = '900 30px ' + TEXT_FONT;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('▸', cx + (cs + gap) / 2, sy);
+      var ax = cx + (cs + gap) / 2;
+      ctx.fillStyle = TH.arrow; ctx.beginPath();
+      ctx.moveTo(ax - 7, sy - 11); ctx.lineTo(ax + 9, sy); ctx.lineTo(ax - 7, sy + 11); ctx.closePath(); ctx.fill();
     });
     var bx = sx + (T - 1) * (cs + gap);
     drawCell(ctx, bx, sy, cs, reveal ? q.options[q.answerIndex] : null, { blank: true, ring: reveal });
 
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillStyle = reveal ? TH.hi : TH.txt;
-    ctx.font = '900 42px ' + TEXT_FONT;
-    ctx.fillText(reveal ? '答案是 ' + '①②③④'.charAt(q.answerIndex) : '照著規律，下一個是哪一個？', W / 2, 452);
+    putText(ctx, reveal ? '答案是 ' + '①②③④'.charAt(q.answerIndex) : '照著規律，下一個是哪一個？', W / 2, 452,
+      { px: 42, c: reveal ? TH.hi : TH.txt });
 
     var os = 168, ogap = 66, ow = 4 * os + 3 * ogap, ox = (W - ow) / 2 + os / 2, oy = 620;
     q.options.forEach(function (c, i) {
       var hit = i === q.answerIndex, cx = ox + i * (os + ogap);
       drawCell(ctx, cx, oy, os, c, { alpha: reveal && !hit ? 0.2 : 1, ring: reveal && hit });
-      ctx.globalAlpha = reveal && !hit ? 0.2 : 1;
-      ctx.fillStyle = reveal && hit ? TH.hi : TH['txt-2'];
-      ctx.font = '900 34px ' + TEXT_FONT;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('①②③④'.charAt(i), cx, oy + os / 2 + 34);
-      ctx.globalAlpha = 1;
+      putText(ctx, '①②③④'.charAt(i), cx, oy + os / 2 + 34,
+        { px: 34, c: reveal && hit ? TH.hi : TH['txt-2'], alpha: reveal && !hit ? 0.2 : 1 });
     });
 
-    if (reveal) {
-      ctx.fillStyle = TH['txt-2'];
-      ctx.font = '700 32px ' + TEXT_FONT;
-      ctx.textAlign = 'center';
-      ctx.fillText('規律：' + q.rule, W / 2, H - 52);
-    }
+    if (reveal) putText(ctx, '規律：' + q.rule, W / 2, H - 52, { px: 32, wt: 700, c: TH['txt-2'] });
+  }
+
+  /* 文字統一走 putText：預覽／圖片時直接畫上去；匯出 PPT 時收進 TEXTS，變成可編輯的文字方塊 */
+  var TEXTS = null;
+  function putText(ctx, runs, x, y, o) {
+    o = o || {};
+    if (typeof runs === 'string') runs = [{ t: runs }];
+    runs = runs.map(function (r) {
+      return { t: r.t, px: r.px || o.px || 40, c: r.c || o.c || TH.txt, wt: r.wt || o.wt || 900 };
+    });
+    var align = o.align || 'center';
+    if (TEXTS) { TEXTS.push({ runs: runs, x: x, y: y, align: align, alpha: o.alpha == null ? 1 : o.alpha }); return; }
+    ctx.save();
+    ctx.globalAlpha = o.alpha == null ? 1 : o.alpha;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    var total = 0;
+    runs.forEach(function (r) { ctx.font = r.wt + ' ' + r.px + 'px ' + TEXT_FONT; r.w = ctx.measureText(r.t).width; total += r.w; });
+    var cx = align === 'left' ? x : align === 'right' ? x - total : x - total / 2;
+    runs.forEach(function (r) {
+      ctx.font = r.wt + ' ' + r.px + 'px ' + TEXT_FONT;
+      ctx.fillStyle = r.c;
+      ctx.fillText(r.t, cx, y);
+      cx += r.w;
+    });
+    ctx.restore();
   }
 
   function drawHeader(ctx, idx, total) {
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'left';
-    ctx.fillStyle = TH.txt;
-    ctx.font = '900 44px ' + TEXT_FONT;
-    ctx.fillText('第 ', 62, 64);
-    var wA = ctx.measureText('第 ').width;
-    ctx.fillStyle = TH.hi;
-    ctx.font = '900 56px ' + TEXT_FONT;
-    ctx.fillText(String(idx + 1), 62 + wA, 62);
-    var wB = ctx.measureText(String(idx + 1)).width;
-    ctx.fillStyle = TH.txt;
-    ctx.font = '900 44px ' + TEXT_FONT;
-    ctx.fillText(' 題', 62 + wA + wB, 64);
-    ctx.fillStyle = TH['txt-2'];
-    ctx.font = '500 30px ' + TEXT_FONT;
-    ctx.textAlign = 'right';
-    ctx.fillText('共 ' + total + ' 題', W - 62, 66);
+    putText(ctx, [{ t: '第 ', px: 44 }, { t: String(idx + 1), px: 56, c: TH.hi }, { t: ' 題', px: 44 }], 62, 64, { align: 'left' });
+    putText(ctx, '共 ' + total + ' 題', W - 62, 66, { px: 30, wt: 500, c: TH['txt-2'], align: 'right' });
+  }
+
+  /* 封面與結尾頁 */
+  function drawCover(ctx, d, title, sub) {
+    ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = TH.hi; roundPath(ctx, W / 2 - 60, 486, 120, 8, 4); ctx.fill();
+    var syms = [], seen = {};
+    d.questions.forEach(function (q) {
+      var src = q.items || q.left || q.seq.map(function (c) { return c.items[0]; });
+      src.forEach(function (it) { var k = DP.symKey(it.sym); if (!seen[k] && syms.length < 5) { seen[k] = 1; syms.push(it.sym); } });
+    });
+    var cs = 120, gap = 34, row = syms.length * cs + (syms.length - 1) * gap, sx = (W - row) / 2 + cs / 2;
+    syms.forEach(function (sym, i) {
+      var cx = sx + i * (cs + gap);
+      drawCell(ctx, cx, 680, cs, { items: [{ sym: sym, rot: 0, scale: 1 }] });
+    });
+    putText(ctx, title, W / 2, 330, { px: 88 });
+    putText(ctx, sub, W / 2, 430, { px: 36, wt: 500, c: TH['txt-2'] });
+  }
+  function drawEnd(ctx, d) {
+    ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
+    putText(ctx, '全部完成，好眼力！', W / 2, 400, { px: 80 });
+    putText(ctx, '共 ' + d.questions.length + ' 題・謝謝大家', W / 2, 510, { px: 36, wt: 500, c: TH['txt-2'] });
   }
 
   function drawSlide(ctx, q, idx, total, reveal) {
@@ -1507,20 +1597,13 @@ window.DeckPlayer = (function () {
 
     var miss = deck.game === 'missing';
     if (miss) {
-      ctx.fillStyle = TH['txt-2'];
-      ctx.font = '900 34px ' + TEXT_FONT;
-      ctx.textAlign = 'center';
-      ctx.fillText('原  本', DCX1, 124);
-      ctx.fillText('現  在', DCX2, 124);
+      putText(ctx, '原  本', DCX1, 124, { px: 34, c: TH['txt-2'] });
+      putText(ctx, '現  在', DCX2, 124, { px: 34, c: TH['txt-2'] });
     }
-    ctx.textAlign = 'center';
-    ctx.font = '900 48px ' + TEXT_FONT;
     if (reveal) {
-      ctx.fillStyle = TH.hi;
-      ctx.fillText(miss ? '不見的就是圈起來的這一個！' : '答案就是圈起來的這一個！', W / 2, H - 62);
+      putText(ctx, miss ? '不見的就是圈起來的這一個！' : '答案就是圈起來的這一個！', W / 2, H - 62, { px: 48, c: TH.hi });
     } else {
-      ctx.fillStyle = TH.txt;
-      ctx.fillText(miss ? '左邊原本有，右邊少了哪一個？' : '左邊和右邊，找出唯一相同的圖案', W / 2, H - 62);
+      putText(ctx, miss ? '左邊原本有，右邊少了哪一個？' : '左邊和右邊，找出唯一相同的圖案', W / 2, H - 62, { px: 48 });
     }
   }
 
@@ -1552,10 +1635,8 @@ window.DeckPlayer = (function () {
       });
     }
     ctx.restore();
-    ctx.textAlign = 'center';
-    ctx.font = '900 48px ' + TEXT_FONT;
-    ctx.fillStyle = reveal ? TH.hi : TH.txt;
-    ctx.fillText(reveal ? '就是圈起來的這一對！' : '同一個畫面裡，哪兩個一模一樣？', W / 2, H - 52);
+    putText(ctx, reveal ? '就是圈起來的這一對！' : '同一個畫面裡，哪兩個一模一樣？', W / 2, H - 52,
+      { px: 48, c: reveal ? TH.hi : TH.txt });
   }
 
   /* ---------------- 極簡 ZIP（store）以組出 .pptx ---------------- */
@@ -1634,6 +1715,30 @@ window.DeckPlayer = (function () {
       '</a:fmtScheme></a:themeElements></a:theme>';
   }
 
+  /* 畫布 1600×900 px → 投影片 12192000×6858000 EMU；1px = 7620 EMU = 0.6pt */
+  var EMU = 7620, PPT_FONT = 'Microsoft JhengHei';
+  function xmlEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function textShapeXML(t, id) {
+    var maxPx = Math.max.apply(null, t.runs.map(function (r) { return r.px; }));
+    var h = Math.round(maxPx * 1.6), y0 = Math.round(t.y - h / 2), x0, w;
+    if (t.align === 'left') { x0 = t.x; w = 760; }
+    else if (t.align === 'right') { w = 760; x0 = t.x - w; }
+    else { w = Math.min(1520, Math.max(220, 2 * Math.min(t.x, W - t.x) - 20)); x0 = Math.round(t.x - w / 2); }
+    var algn = t.align === 'left' ? 'l' : t.align === 'right' ? 'r' : 'ctr';
+    var alpha = t.alpha < 1 ? '<a:alpha val="' + Math.round(t.alpha * 100000) + '"/>' : '';
+    var runs = t.runs.map(function (r) {
+      return '<a:r><a:rPr lang="zh-TW" altLang="en-US" sz="' + Math.round(r.px * 60) + '" b="' + (r.wt >= 700 ? 1 : 0) + '" dirty="0">' +
+        '<a:solidFill><a:srgbClr val="' + r.c.replace('#', '').toUpperCase() + '">' + alpha + '</a:srgbClr></a:solidFill>' +
+        '<a:latin typeface="' + PPT_FONT + '"/><a:ea typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(r.t) + '</a:t></a:r>';
+    }).join('');
+    var name = xmlEsc(t.runs.map(function (r) { return r.t; }).join('').slice(0, 24));
+    return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="文字 ' + name + '"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>' +
+      '<p:spPr><a:xfrm><a:off x="' + x0 * EMU + '" y="' + y0 * EMU + '"/><a:ext cx="' + w * EMU + '" cy="' + h * EMU + '"/></a:xfrm>' +
+      '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+      '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr"><a:normAutofit/></a:bodyPr><a:lstStyle/>' +
+      '<a:p><a:pPr algn="' + algn + '"/>' + runs + '</a:p></p:txBody></p:sp>';
+  }
+
   function buildPptx(slideBuffers) {
     var enc = new TextEncoder();
     var files = [];
@@ -1689,13 +1794,14 @@ window.DeckPlayer = (function () {
 
     add('ppt/theme/theme1.xml', themeXML());
 
-    slideBuffers.forEach(function (buf, i) {
-      var n = i + 1;
+    slideBuffers.forEach(function (sl, i) {
+      var n = i + 1, buf = sl.png;
+      var texts = (sl.texts || []).map(function (t, k) { return textShapeXML(t, k + 3); }).join('');
       add('ppt/slides/slide' + n + '.xml', XMLHEAD + '<p:sld ' + NS_P + '><p:cSld><p:spTree>' + EMPTY_TREE +
-        '<p:pic><p:nvPicPr><p:cNvPr id="2" name="Slide ' + n + '"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>' +
+        '<p:pic><p:nvPicPr><p:cNvPr id="2" name="背景圖 ' + n + '"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>' +
         '<p:blipFill><a:blip r:embed="rId2"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>' +
         '<p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="12192000" cy="6858000"/></a:xfrm>' +
-        '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>' +
+        '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>' + texts +
         '</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>');
       add('ppt/slides/_rels/slide' + n + '.xml.rels', XMLHEAD + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
         '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>' +
@@ -1750,40 +1856,54 @@ window.DeckPlayer = (function () {
     return '找一樣_' + deckLabel() + '_每邊' + deck.perSide + '個_' + q;
   }
 
+  var GAME_NAME = { pattern: '規律接龍', match: '找一樣', missing: '找缺少', twin: '找相同' };
+  function autoTitle() { return GAME_NAME[state.game] + '・' + deckLabel(); }
+  function deckTitle() { var v = $('titleIn').value.trim(); return v || autoTitle(); }
+  function deckSub() {
+    var d = deck, extra = d.game === 'pattern' ? LEVEL_NAME[state.level] + '・' + state.total + ' 格'
+      : d.game === 'twin' ? '每頁 ' + d.count + ' 個圖案' : (d.game === 'missing' ? '原本 ' : '每邊 ') + d.perSide + ' 個圖案';
+    return extra + '・共 ' + d.questions.length + ' 題';
+  }
+
   function exportPPTX() {
     if (!deck) return;
     var btn = $('pptBtn');
     btn.disabled = true;
-    var old = btn.textContent;
+    var old = btn.innerHTML;
+    function done() { TEXTS = null; btn.disabled = false; btn.innerHTML = old; }
     say('正在產生投影片…');
     TH = deck.theme || SLIDE_THEMES[0].v;
-    preloadImages(deck.images).then(function () {
+    var d = deck, draw = d.game === 'pattern' ? drawPatternSlide : d.game === 'twin' ? drawTwinSlide : drawSlide;
+    var pages = [function (ctx) { drawCover(ctx, d, deckTitle(), deckSub()); }];
+    d.questions.forEach(function (q, qi) {
+      [false, true].forEach(function (rv) { pages.push(function (ctx) { draw(ctx, q, qi, d.questions.length, rv); }); });
+    });
+    pages.push(function (ctx) { drawEnd(ctx, d); });
+    preloadImages(d.images).then(function () {
       var cv = document.createElement('canvas');
       cv.width = W; cv.height = H;
       var ctx = cv.getContext('2d');
-      var bufs = [];
-      var total = deck.questions.length * 2;
+      var slides = [];
       function step(i) {
-        if (i >= total) {
+        if (i >= pages.length) {
           btn.textContent = '打包中…';
-          var blob = buildPptx(bufs);
-          var name = fileBase() + '.pptx';
-          return saveFile(name, blob).then(function () {
-            btn.disabled = false; btn.textContent = old;
-          });
+          var blob = buildPptx(slides);
+          return saveFile(fileBase() + '.pptx', blob).then(done);
         }
-        var qi = Math.floor(i / 2), reveal = i % 2 === 1;
-        (deck.game === 'pattern' ? drawPatternSlide : deck.game === 'twin' ? drawTwinSlide : drawSlide)(ctx, deck.questions[qi], qi, deck.questions.length, reveal);
-        btn.textContent = '製作中 ' + (i + 1) + '/' + total;
+        TEXTS = [];
+        pages[i](ctx);
+        var texts = TEXTS;
+        TEXTS = null;
+        btn.textContent = '製作中 ' + (i + 1) + '/' + pages.length;
         return new Promise(function (res) {
           cv.toBlob(function (b) {
-            b.arrayBuffer().then(function (ab) { bufs.push(new Uint8Array(ab)); res(); });
+            b.arrayBuffer().then(function (ab) { slides.push({ png: new Uint8Array(ab), texts: texts }); res(); });
           }, 'image/png');
         }).then(function () { return step(i + 1); });
       }
       return step(0);
     }).catch(function (e) {
-      btn.disabled = false; btn.textContent = old;
+      done();
       say('匯出失敗：' + (e && e.message ? e.message : e));
     });
   }
@@ -1792,13 +1912,13 @@ window.DeckPlayer = (function () {
     if (!deck) return;
     var css = document.getElementById('playerCSS').textContent;
     var js = document.getElementById('playerJS').textContent;
-    var title = fileBase().replace(/_/g, '・');
+    var title = xmlEsc(deckTitle());
     var json = JSON.stringify(deck).replace(/<\//g, '<\\/');
     var html = '<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">' +
       '<meta name="viewport" content="width=device-width,initial-scale=1">' +
       '<title>' + title + '</title>' +
       '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Noto+Serif+TC:wght@900&display=swap">' +
-      '<style>html,body{margin:0;height:100%;background:#0A1F25;overflow:hidden}</style>' +
+      '<style>html,body{margin:0;height:100%;background:' + (deck.theme ? deck.theme.stage : '#1F3A33') + ';overflow:hidden}</style>' +
       '<style>' + css + '</style></head><body><div id="root"></div>' +
       '<script>window.__DECK__=' + json + ';<\/script>' +
       '<script>' + js + '<\/script>' +
