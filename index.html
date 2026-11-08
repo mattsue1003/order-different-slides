@@ -789,9 +789,9 @@ window.DeckPlayer = (function () {
         <div class="field">
           <div class="label">遊戲類型</div>
           <div class="seg" id="segGame" style="grid-template-columns:repeat(2,1fr)" role="group" aria-label="遊戲類型">
-            <button type="button" data-game="pattern" aria-pressed="true">規律接龍</button>
+            <button type="button" data-game="pattern" aria-pressed="false">規律接龍</button>
             <button type="button" data-game="match" aria-pressed="false">找一樣</button>
-            <button type="button" data-game="missing" aria-pressed="false">找缺少</button>
+            <button type="button" data-game="missing" aria-pressed="true">找缺少</button>
             <button type="button" data-game="twin" aria-pressed="false">找相同</button>
           </div>
           <p style="margin:8px 0 0;font-size:13px;color:var(--ink-3)" id="gameHint"></p>
@@ -847,7 +847,7 @@ window.DeckPlayer = (function () {
         </div>
         </div>
 
-        <div id="missingOnly" hidden>
+        <div id="missingOnly">
           <div class="field">
             <div class="label">原本的圖案數量 <b id="mVal">6</b></div>
             <input type="range" id="mRange" min="3" max="12" step="1" value="6">
@@ -855,8 +855,8 @@ window.DeckPlayer = (function () {
           </div>
           <div class="field">
             <div class="switch">
-              <span class="txt">位置不變<small>右邊照原位擺，只是少一個；關掉則右邊重新打散，難度較高</small></span>
-              <button type="button" class="toggle" id="tKeep" aria-pressed="true" aria-label="位置不變"></button>
+              <span class="txt">位置不變<small>打開＝右邊照原位擺、只少一個（較簡單）；關閉＝右邊重新打散（預設）</small></span>
+              <button type="button" class="toggle" id="tKeep" aria-pressed="false" aria-label="位置不變"></button>
             </div>
           </div>
         </div>
@@ -869,7 +869,7 @@ window.DeckPlayer = (function () {
           </div>
         </div>
 
-        <div id="patternOnly">
+        <div id="patternOnly" hidden>
           <div class="field">
             <div class="label">難度</div>
             <div class="seg" id="segLevel" role="group" aria-label="規律難度">
@@ -898,7 +898,7 @@ window.DeckPlayer = (function () {
           <p class="fhint">留空會自動用遊戲名稱＋素材。PPT 裡的所有文字下載後都還能再改。</p>
         </div>
 
-        <div class="field" id="switchField" hidden>
+        <div class="field" id="switchField">
           <div class="switch">
             <span class="txt">圖案旋轉<small>每個圖案隨機轉向，長者要多繞一圈才找得到</small></span>
             <button type="button" class="toggle" id="tRotate" aria-pressed="true" aria-label="圖案旋轉"></button>
@@ -1002,12 +1002,12 @@ window.DeckPlayer = (function () {
     images: {},
     imageOrder: [],
     imageStyle: 'round',
-    game: 'pattern',
+    game: 'missing',
     slideTheme: 'moss',
     level: 2,
     total: 6,
     nMiss: 6,
-    keepPos: true,
+    keepPos: false,
     nTwin: 12
   };
   var deck = null;
