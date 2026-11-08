@@ -202,6 +202,9 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
 .sym{position:absolute; display:flex; align-items:center; justify-content:center; line-height:1; user-select:none}
 .sym svg{width:100%; height:100%; display:block}
 .sym img{width:100%; height:100%; object-fit:contain; display:block}
+.sym.ghost{visibility:hidden}
+.board{display:block; position:relative; aspect-ratio:16/9; border-radius:10px; background:var(--card,var(--surface)); border:2px solid var(--card-line,var(--ink)); overflow:hidden}
+.thumb .solo{display:block; margin-top:8px; padding:9px 10px; border-radius:10px; background:var(--stage,transparent)}
 
 .prow{display:flex; align-items:center; justify-content:center; gap:5px; margin-top:9px;
   padding:9px 8px; border-radius:10px; background:var(--stage,#0A1F25)}
@@ -328,9 +331,27 @@ input[type=range]{width:100%; accent-color:var(--orange); height:26px}
 @keyframes fys-fill{0%{transform:scale(.4); opacity:0}60%{transform:scale(1.18)}100%{transform:scale(1); opacity:1}}
 .fys-cell.blank.filled .fys-it{animation:fys-fill .6s cubic-bezier(.22,1.3,.36,1) both}
 
+/* --- 找缺少：左右標籤＋右邊空位 --- */
+.fys-col{display:flex; flex-direction:column; align-items:center; gap:10px; flex:none}
+.fys-cap{font-size:clamp(18px,2.2vw,30px); font-weight:900; color:var(--txt-2); letter-spacing:.24em}
+.fys-col .fys-card{width:min(39vw,62vh)}
+.fys-sym.ghost{opacity:0}
+.fys.revealed .fys-sym.ghost.hit{opacity:.62; filter:none; animation:fys-pop .75s cubic-bezier(.22,1.3,.36,1) both}
+.fys-sym.ghost.hit::before{border-style:dashed}
+
+/* --- 找相同：同一個畫面 --- */
+.fys-board{
+  position:relative; aspect-ratio:16/9; width:min(92vw, calc((100vh - 250px) * 16 / 9));
+  background:var(--card); border:6px solid var(--card-line); border-radius:28px;
+  box-shadow:0 26px 60px -26px rgba(0,0,0,.85); overflow:hidden; flex:none;
+}
+
 @media (max-width:820px), (orientation:portrait){
   .fys-stage{flex-direction:column; gap:8px}
   .fys-card{width:min(86vw, 40vh)}
+  .fys-col .fys-card{width:min(78vw, 27vh)}
+  .fys-col{gap:4px}
+  .fys-board{width:min(94vw, calc((100vh - 250px) * 16 / 9))}
   .fys-split{flex-direction:row; width:100%; justify-content:center; gap:12px}
   .fys-split .bar{width:auto; height:3px; flex:1; min-height:0; background:repeating-linear-gradient(to right,#2E5560 0 12px,transparent 12px 24px)}
   .fys-dots{display:none}
@@ -388,12 +409,33 @@ window.DeckPlayer = (function () {
       var left = (0.5 + it.x / 2 - it.r / 2) * 100;
       var top = (0.5 + it.y / 2 - it.r / 2) * 100;
       var size = it.r * 100;
-      html += '<div class="' + cls + (hit ? ' hit' : '') + '" style="left:' + left.toFixed(3) + '%;top:' + top.toFixed(3) +
+      html += '<div class="' + cls + (hit ? ' hit' : '') + (it.ghost ? ' ghost' : '') + '" style="left:' + left.toFixed(3) + '%;top:' + top.toFixed(3) +
         '%;width:' + size.toFixed(3) + '%;height:' + size.toFixed(3) + '%;--r:' + it.rot + 'deg;--s:' + it.scale +
         ';transform:rotate(' + it.rot + 'deg) scale(' + it.scale + ')">' + symSVG(it.sym, images) + '</div>';
     }
     el.innerHTML = html;
   }
+
+  /* --- 找相同：16:9 畫板，x/y 為中心點佔寬高比例，s 為邊長佔寬度比例 --- */
+  var BOARD_AR = 16 / 9;
+  function renderBoard(el, items, images, opts) {
+    opts = opts || {};
+    var cls = opts.cls || 'sym', ansKey = opts.answerKey, html = '';
+    items.forEach(function (it) {
+      var hit = ansKey && symKey(it.sym) === ansKey;
+      var w = it.s * 100, h = it.s * BOARD_AR * 100;
+      html += '<div class="' + cls + (hit ? ' hit' : '') + '" style="left:' + (it.x * 100 - w / 2).toFixed(3) +
+        '%;top:' + (it.y * 100 - h / 2).toFixed(3) + '%;width:' + w.toFixed(3) + '%;height:' + h.toFixed(3) +
+        '%;--r:' + it.rot + 'deg;--s:1;transform:rotate(' + it.rot + 'deg)">' + symSVG(it.sym, images) + '</div>';
+    });
+    el.innerHTML = html;
+  }
+
+  var SAY = {
+    match:   ['左邊和右邊，找出<b>唯一相同</b>的圖案', '答案是<b>這一個</b>！'],
+    missing: ['左邊原本有，右邊<b>少了哪一個</b>？', '不見的是<b>這一個</b>！'],
+    twin:    ['同一個畫面裡，哪<b>兩個一模一樣</b>？', '就是這<b>一對</b>！']
+  };
 
   /* --- 規律接龍：格子渲染 --- */
   var GRIDS = {
@@ -468,6 +510,14 @@ window.DeckPlayer = (function () {
             '<div class="fys-seq" data-seq></div>' +
             '<div class="fys-opts" data-opts></div>' +
           '</div>'
+        : deck.game === 'twin'
+        ? '<div class="fys-stage"><div class="fys-board" data-board></div></div>'
+        : deck.game === 'missing'
+        ? '<div class="fys-stage">' +
+            '<div class="fys-col"><span class="fys-cap">原本</span><div class="fys-card" data-left></div></div>' +
+            '<div class="fys-split"><span class="bar"></span><span class="q">？</span><span class="bar"></span></div>' +
+            '<div class="fys-col"><span class="fys-cap">現在</span><div class="fys-card" data-right></div></div>' +
+          '</div>'
         : '<div class="fys-stage">' +
             '<div class="fys-card" data-left></div>' +
             '<div class="fys-split"><span class="bar"></span><span class="q">？</span><span class="bar"></span></div>' +
@@ -500,7 +550,7 @@ window.DeckPlayer = (function () {
     });
     if (this.$('close')) this.$('close').addEventListener('click', function () { self.close(); });
     el.querySelector('.fys-stage').addEventListener('click', function (e) {
-      if (e.target.closest('.fys-card')) { self.revealed ? self.go(1) : self.reveal(); }
+      if (e.target.closest('.fys-card, .fys-board')) { self.revealed ? self.go(1) : self.reveal(); }
     });
     this.cellHTML = cellHTML;
 
@@ -547,10 +597,13 @@ window.DeckPlayer = (function () {
       this.$('rule').textContent = '';
       this.$('say').innerHTML = '照著規律，<b>下一個</b>是哪一個？';
       this.fit();
+    } else if (this.deck.game === 'twin') {
+      renderBoard(this.$('board'), q.items, this.images, { cls: 'fys-sym', answerKey: q.answer });
+      this.$('say').innerHTML = SAY.twin[0];
     } else {
       renderDisc(this.$('left'), q.left, this.images, { cls: 'fys-sym', answerKey: q.answer });
       renderDisc(this.$('right'), q.right, this.images, { cls: 'fys-sym', answerKey: q.answer });
-      this.$('say').innerHTML = '左邊和右邊，找出<b>唯一相同</b>的圖案';
+      this.$('say').innerHTML = (SAY[this.deck.game] || SAY.match)[0];
     }
     this.$('go').textContent = '公布答案';
     this.$('alt').textContent = '下一題 ▶';
@@ -599,7 +652,7 @@ window.DeckPlayer = (function () {
       this.$('rule').textContent = '規律：' + q.rule;
       this.$('say').innerHTML = '答案是 <b>' + '①②③④'.charAt(q.answerIndex) + '</b>';
     } else {
-      this.$('say').innerHTML = '答案是<b>這一個</b>！';
+      this.$('say').innerHTML = (SAY[this.deck.game] || SAY.match)[1];
     }
     this.$('go').textContent = this.i === this.deck.questions.length - 1 ? '完成 ▶' : '下一題 ▶';
     this.$('alt').textContent = '↺ 重看題目';
@@ -616,7 +669,7 @@ window.DeckPlayer = (function () {
       this.$('rule').textContent = '';
       this.$('say').innerHTML = '照著規律，<b>下一個</b>是哪一個？';
     } else {
-      this.$('say').innerHTML = '左邊和右邊，找出<b>唯一相同</b>的圖案';
+      this.$('say').innerHTML = (SAY[this.deck.game] || SAY.match)[0];
     }
     this.$('go').textContent = '公布答案';
     this.$('alt').textContent = '下一題 ▶';
@@ -660,6 +713,8 @@ window.DeckPlayer = (function () {
   return {
     mount: function (root, deck, opts) { return new Player(root, deck, opts); },
     renderDisc: renderDisc,
+    renderBoard: renderBoard,
+    BOARD_AR: BOARD_AR,
     cellHTML: cellHTML,
     symSVG: symSVG,
     symKey: symKey,
@@ -672,7 +727,7 @@ window.DeckPlayer = (function () {
   <div class="hero-in">
     <span class="kraft">免費網頁工具</span>
     <h1>長者<em>遊戲簡報</em>生成器</h1>
-    <p>兩種動腦遊戲：<b>規律接龍</b>練歸納推理，<b>找一樣</b>練視覺搜尋。選素材、調難度、挑一個簡報風格，一鍵產出整堂的上課簡報；可全螢幕播放，也能匯出 PowerPoint 或離線 HTML 帶到教室。</p>
+    <p>四種動腦遊戲：<b>規律接龍</b>練歸納推理，<b>找一樣</b>練視覺搜尋，<b>找缺少</b>練比對與記憶，<b>找相同</b>在同一個畫面裡找出一對。選素材、調難度、挑一個簡報風格，一鍵產出整堂的上課簡報；可全螢幕播放，也能匯出 PowerPoint 或離線 HTML 帶到教室。</p>
   </div>
 </header>
 
@@ -687,6 +742,8 @@ window.DeckPlayer = (function () {
           <div class="seg" id="segGame" style="grid-template-columns:repeat(2,1fr)" role="group" aria-label="遊戲類型">
             <button type="button" data-game="pattern" aria-pressed="true">規律接龍</button>
             <button type="button" data-game="match" aria-pressed="false">找一樣</button>
+            <button type="button" data-game="missing" aria-pressed="false">找缺少</button>
+            <button type="button" data-game="twin" aria-pressed="false">找相同</button>
           </div>
           <p style="margin:8px 0 0;font-size:13px;color:var(--ink-3)" id="gameHint"></p>
         </div>
@@ -739,6 +796,28 @@ window.DeckPlayer = (function () {
           <input type="range" id="nRange" min="3" max="8" step="1" value="5">
           <div class="ticks"><span>3 最簡單</span><span>8 最困難</span></div>
         </div>
+        </div>
+
+        <div id="missingOnly" hidden>
+          <div class="field">
+            <div class="label">原本的圖案數量 <b id="mVal">6</b></div>
+            <input type="range" id="mRange" min="3" max="12" step="1" value="6">
+            <div class="ticks"><span>3 最簡單</span><span>12 最困難</span></div>
+          </div>
+          <div class="field">
+            <div class="switch">
+              <span class="txt">位置不變<small>右邊照原位擺，只是少一個；關掉則右邊重新打散，難度較高</small></span>
+              <button type="button" class="toggle" id="tKeep" aria-pressed="true" aria-label="位置不變"></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="twinOnly" hidden>
+          <div class="field">
+            <div class="label">畫面圖案數量 <b id="wVal">12</b></div>
+            <input type="range" id="wRange" min="6" max="24" step="1" value="12">
+            <div class="ticks"><span>6 最簡單</span><span>24 最困難</span></div>
+          </div>
         </div>
 
         <div id="patternOnly">
@@ -861,7 +940,10 @@ window.DeckPlayer = (function () {
     game: 'pattern',
     slideTheme: 'ink',
     level: 2,
-    total: 6
+    total: 6,
+    nMiss: 6,
+    keepPos: true,
+    nTwin: 12
   };
   var deck = null;
   var imgSeq = 0;
@@ -945,6 +1027,83 @@ window.DeckPlayer = (function () {
     var images = {};
     if (state.source === 'image') images = JSON.parse(JSON.stringify(state.images));
     return { title: '找一樣', game: 'match', perSide: n, questions: qs, images: images, theme: themeDef(state.slideTheme).v };
+  }
+
+  function needFor() {
+    if (state.game === 'pattern') return 6;
+    if (state.game === 'missing') return state.nMiss;
+    if (state.game === 'twin') return state.nTwin - 1;
+    return 2 * state.n - 1;
+  }
+
+  /* 每題換一個答案，避免連續兩題同一個 */
+  function pickFresh(p, lastKey) {
+    var pick = shuffle(p.slice());
+    if (DP.symKey(pick[0]) === lastKey && pick.length > 1) { var sw = pick[0]; pick[0] = pick[1]; pick[1] = sw; }
+    return pick;
+  }
+
+  /* ---------------- 找缺少出題 ---------------- */
+  function buildMissingDeck() {
+    var p = pool(), n = state.nMiss;
+    if (p.length < n) return null;
+    var qs = [], last = null;
+    for (var i = 0; i < state.count; i++) {
+      var pick = pickFresh(p, last), gone = pick[0];
+      last = DP.symKey(gone);
+      var syms = shuffle(pick.slice(0, n)), slots = layout(n);
+      var left = attach(syms, slots), right;
+      if (state.keepPos) {
+        right = left.map(function (it) {
+          var c = { sym: it.sym, x: it.x, y: it.y, r: it.r, rot: it.rot, scale: it.scale };
+          if (it.sym === gone) c.ghost = true;
+          return c;
+        });
+      } else {
+        right = attach(shuffle(syms.slice()), layout(n));
+        right.forEach(function (it) { if (it.sym === gone) it.ghost = true; });
+      }
+      qs.push({ answer: last, left: left, right: right });
+    }
+    var images = state.source === 'image' ? JSON.parse(JSON.stringify(state.images)) : {};
+    return { title: '找缺少', game: 'missing', perSide: n, questions: qs, images: images, theme: themeDef(state.slideTheme).v };
+  }
+
+  /* ---------------- 找相同（同一個畫面）出題 ---------------- */
+  function boardLayout(m) {
+    var AR = DP.BOARD_AR;
+    var cols = Math.max(2, Math.ceil(Math.sqrt(m * AR))), rows = Math.ceil(m / cols);
+    while ((cols - 1) * rows >= m && cols > 2) cols--;
+    var cells = [];
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) cells.push([c, r]);
+    cells = shuffle(cells).slice(0, m);
+    var PAD = 0.045, inW = 1 - 2 * PAD, inH = 1 / AR - 2 * PAD;   // 四周留白，公布答案時的圈圈才不會被切到
+    var cw = inW / cols, chW = inH / rows;   // 一格的寬、高（皆以畫板寬度為單位）
+    var base = Math.min(cw, chW) * 0.66;
+    return cells.map(function (cr) {
+      var s = base * (state.scaleVary ? (0.78 + Math.random() * 0.3) : 1);
+      var slackX = Math.max(0, cw - s * 1.15), slackY = Math.max(0, chW - s * 1.15);
+      var x = PAD + (cr[0] + 0.5) * cw + (Math.random() - 0.5) * slackX;
+      var y = (PAD + (cr[1] + 0.5) * chW + (Math.random() - 0.5) * slackY) * AR;
+      return { x: x, y: y, s: s, rot: state.rotate ? Math.round(Math.random() * 360) : 0 };
+    });
+  }
+
+  function buildTwinDeck() {
+    var p = pool(), m = state.nTwin;
+    if (p.length < m - 1) return null;
+    var qs = [], last = null;
+    for (var i = 0; i < state.count; i++) {
+      var pick = pickFresh(p, last), twin = pick[0];
+      last = DP.symKey(twin);
+      var syms = shuffle([twin].concat(pick.slice(0, m - 1))), slots = boardLayout(m);
+      qs.push({
+        answer: last,
+        items: syms.map(function (s, k) { return { sym: s, x: slots[k].x, y: slots[k].y, s: slots[k].s, rot: slots[k].rot }; })
+      });
+    }
+    var images = state.source === 'image' ? JSON.parse(JSON.stringify(state.images)) : {};
+    return { title: '找相同', game: 'twin', count: m, questions: qs, images: images, theme: themeDef(state.slideTheme).v };
   }
 
   /* ---------------- 規律接龍出題 ---------------- */
@@ -1061,7 +1220,7 @@ window.DeckPlayer = (function () {
     var grid = $('previewGrid'), note = $('previewNote');
     grid.innerHTML = '';
     if (!deck) {
-      var need = state.game === 'pattern' ? 6 : 2 * state.n - 1;
+      var need = needFor();
       grid.innerHTML = '<p class="empty">素材不足：這個設定至少需要 <b>' + need +
         '</b> 種不同圖案，目前只有 ' + pool().length + ' 種。請多上傳幾張圖片，或把難度／每邊圖案數量調小。</p>';
       note.textContent = '';
@@ -1082,12 +1241,19 @@ window.DeckPlayer = (function () {
         row += '<div class="fys-cell blank">？</div>';
         b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans">' +
           '①②③④'.charAt(q.answerIndex) + '</span></span><span class="prow">' + row + '</span>';
+      } else if (deck.game === 'twin') {
+        b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans" data-a></span></span>' +
+          '<span class="solo"><span class="board" data-b></span></span>';
+        DP.renderBoard(b.querySelector('[data-b]'), q.items, deck.images, {});
       } else {
         b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans" data-a></span></span>' +
-          '<span class="pair"><span class="disc" data-l></span><span class="sep">◆</span><span class="disc" data-r></span></span>';
+          '<span class="pair"><span class="disc" data-l></span><span class="sep">' + (deck.game === 'missing' ? '→' : '◆') +
+          '</span><span class="disc" data-r></span></span>';
         DP.renderDisc(b.querySelector('[data-l]'), q.left, deck.images, {});
         DP.renderDisc(b.querySelector('[data-r]'), q.right, deck.images, {});
-        var ansItem = q.left.filter(function (it) { return DP.symKey(it.sym) === q.answer; })[0];
+      }
+      if (deck.game !== 'pattern') {
+        var ansItem = (q.left || q.items).filter(function (it) { return DP.symKey(it.sym) === q.answer; })[0];
         b.querySelector('[data-a]').innerHTML = '<span style="display:inline-block;width:20px;height:20px;vertical-align:-4px">' +
           DP.symSVG(ansItem.sym, deck.images) + '</span>';
       }
@@ -1097,11 +1263,15 @@ window.DeckPlayer = (function () {
     });
     note.textContent = deck.game === 'pattern'
       ? '點任何一題可從那一題開始播放。公布答案時會一併顯示「規律是什麼」，方便帶長輩說出理由。'
+      : deck.game === 'missing'
+      ? '點任何一題可從那一題開始播放。公布答案時，左邊圈出不見的圖案，右邊原本的位置也會淡淡浮現。'
       : '點任何一題可從那一題開始播放。播放時按空白鍵或點畫面公布答案，← → 可切換題目。';
   }
 
+  var BUILDERS = { pattern: function () { return buildPatternDeck(); }, match: function () { return buildDeck(); },
+    missing: function () { return buildMissingDeck(); }, twin: function () { return buildTwinDeck(); } };
   function regenerate() {
-    deck = state.game === 'pattern' ? buildPatternDeck() : buildDeck();
+    deck = BUILDERS[state.game]();
     renderPreview();
   }
 
@@ -1184,11 +1354,12 @@ window.DeckPlayer = (function () {
     ctx.clip();
     var hitItem = null;
     items.forEach(function (it) {
+      if (it.ghost && !reveal) return;
       var hit = DP.symKey(it.sym) === q.answer;
       if (hit) hitItem = it;
       var size = it.r * DR * 2 * (reveal && hit ? 1.2 : 1);
       ctx.save();
-      ctx.globalAlpha = reveal ? (hit ? 1 : 0.16) : 1;
+      ctx.globalAlpha = reveal ? (hit ? (it.ghost ? 0.6 : 1) : 0.16) : 1;
       ctx.translate(cx + it.x * DR, cy + it.y * DR);
       ctx.rotate(it.rot * Math.PI / 180);
       drawSym(ctx, it.sym, size);
@@ -1198,7 +1369,10 @@ window.DeckPlayer = (function () {
       var rr = hitItem.r * DR * 1.25 + 10;
       ctx.beginPath();
       ctx.arc(cx + hitItem.x * DR, cy + hitItem.y * DR, rr, 0, Math.PI * 2);
-      ctx.lineWidth = 9; ctx.strokeStyle = TH.hi2; ctx.globalAlpha = 1; ctx.stroke();
+      ctx.lineWidth = 9; ctx.strokeStyle = TH.hi2; ctx.globalAlpha = 1;
+      if (hitItem.ghost) ctx.setLineDash([18, 12]);
+      ctx.stroke();
+      ctx.setLineDash([]);
     }
     ctx.restore();
     ctx.restore();
@@ -1331,15 +1505,57 @@ window.DeckPlayer = (function () {
     drawDisc(ctx, DCX1, DCY, q, q.left, reveal);
     drawDisc(ctx, DCX2, DCY, q, q.right, reveal);
 
+    var miss = deck.game === 'missing';
+    if (miss) {
+      ctx.fillStyle = TH['txt-2'];
+      ctx.font = '900 34px ' + TEXT_FONT;
+      ctx.textAlign = 'center';
+      ctx.fillText('原  本', DCX1, 124);
+      ctx.fillText('現  在', DCX2, 124);
+    }
     ctx.textAlign = 'center';
     ctx.font = '900 48px ' + TEXT_FONT;
     if (reveal) {
       ctx.fillStyle = TH.hi;
-      ctx.fillText('答案就是圈起來的這一個！', W / 2, H - 62);
+      ctx.fillText(miss ? '不見的就是圈起來的這一個！' : '答案就是圈起來的這一個！', W / 2, H - 62);
     } else {
       ctx.fillStyle = TH.txt;
-      ctx.fillText('左邊和右邊，找出唯一相同的圖案', W / 2, H - 62);
+      ctx.fillText(miss ? '左邊原本有，右邊少了哪一個？' : '左邊和右邊，找出唯一相同的圖案', W / 2, H - 62);
     }
+  }
+
+  function drawTwinSlide(ctx, q, idx, total, reveal) {
+    ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
+    drawHeader(ctx, idx, total);
+    var BW = 1140, BH = BW / DP.BOARD_AR, BX = (W - BW) / 2, BY = 132;
+    ctx.save();
+    roundPath(ctx, BX, BY, BW, BH, 34);
+    ctx.fillStyle = TH.card; ctx.fill();
+    ctx.lineWidth = 10; ctx.strokeStyle = TH.line2; ctx.stroke();
+    ctx.clip();
+    var hits = [];
+    q.items.forEach(function (it) {
+      var hit = DP.symKey(it.sym) === q.answer;
+      if (hit) hits.push(it);
+      ctx.save();
+      ctx.globalAlpha = reveal ? (hit ? 1 : 0.16) : 1;
+      ctx.translate(BX + it.x * BW, BY + it.y * BH);
+      ctx.rotate(it.rot * Math.PI / 180);
+      drawSym(ctx, it.sym, it.s * BW * (reveal && hit ? 1.2 : 1));
+      ctx.restore();
+    });
+    if (reveal) {
+      hits.forEach(function (it) {
+        ctx.beginPath();
+        ctx.arc(BX + it.x * BW, BY + it.y * BH, it.s * BW * 0.62 + 10, 0, Math.PI * 2);
+        ctx.lineWidth = 9; ctx.strokeStyle = TH.hi2; ctx.stroke();
+      });
+    }
+    ctx.restore();
+    ctx.textAlign = 'center';
+    ctx.font = '900 48px ' + TEXT_FONT;
+    ctx.fillStyle = reveal ? TH.hi : TH.txt;
+    ctx.fillText(reveal ? '就是圈起來的這一對！' : '同一個畫面裡，哪兩個一模一樣？', W / 2, H - 52);
   }
 
   /* ---------------- 極簡 ZIP（store）以組出 .pptx ---------------- */
@@ -1527,9 +1743,11 @@ window.DeckPlayer = (function () {
     return t ? t.name : '主題圖示';
   }
   function fileBase() {
-    return state.game === 'pattern'
-      ? '規律接龍_' + deckLabel() + '_' + LEVEL_NAME[state.level] + '_' + state.total + '格_' + deck.questions.length + '題'
-      : '找一樣_' + deckLabel() + '_每邊' + state.n + '個_' + deck.questions.length + '題';
+    var q = deck.questions.length + '題';
+    if (deck.game === 'pattern') return '規律接龍_' + deckLabel() + '_' + LEVEL_NAME[state.level] + '_' + state.total + '格_' + q;
+    if (deck.game === 'missing') return '找缺少_' + deckLabel() + '_' + deck.perSide + '個_' + q;
+    if (deck.game === 'twin') return '找相同_' + deckLabel() + '_' + deck.count + '個_' + q;
+    return '找一樣_' + deckLabel() + '_每邊' + deck.perSide + '個_' + q;
   }
 
   function exportPPTX() {
@@ -1555,7 +1773,7 @@ window.DeckPlayer = (function () {
           });
         }
         var qi = Math.floor(i / 2), reveal = i % 2 === 1;
-        (deck.game === 'pattern' ? drawPatternSlide : drawSlide)(ctx, deck.questions[qi], qi, deck.questions.length, reveal);
+        (deck.game === 'pattern' ? drawPatternSlide : deck.game === 'twin' ? drawTwinSlide : drawSlide)(ctx, deck.questions[qi], qi, deck.questions.length, reveal);
         btn.textContent = '製作中 ' + (i + 1) + '/' + total;
         return new Promise(function (res) {
           cv.toBlob(function (b) {
@@ -1593,6 +1811,8 @@ window.DeckPlayer = (function () {
   /* ---------------- 介面連結 ---------------- */
   var GAME_HINT = {
     match: '左右兩邊各一組圖案，找出唯一相同的那一個。練視覺搜尋與注意力。',
+    missing: '左邊是原本的圖案，右邊少了一個，找出不見的是哪一個。練視覺比對與短期記憶，可請長輩先記住左邊再看右邊。',
+    twin: '同一個畫面裡放滿圖案，只有兩個一模一樣，找出這一對。練視覺掃描，適合帶長輩由左到右、由上到下有順序地看。',
     pattern: '一排圖案照規律排下去，最後一格空白，從四個選項選出下一個。練歸納推理，答對之後請長輩說出規律更有價值。'
   };
   var LEVEL_HINT = {
@@ -1606,8 +1826,11 @@ window.DeckPlayer = (function () {
       b.setAttribute('aria-pressed', String(b.dataset.game === state.game));
     });
     $('gameHint').textContent = GAME_HINT[state.game];
-    $('matchOnly').hidden = pat;
+    $('matchOnly').hidden = state.game !== 'match';
+    $('missingOnly').hidden = state.game !== 'missing';
+    $('twinOnly').hidden = state.game !== 'twin';
     $('switchField').hidden = pat;
+    $('needImg').textContent = String(needFor());
     $('patternOnly').hidden = !pat;
     $('levelHint').textContent = LEVEL_HINT[state.level];
     Array.prototype.forEach.call($('segLevel').children, function (b) {
@@ -1659,7 +1882,7 @@ window.DeckPlayer = (function () {
     $('themeField').hidden = state.source !== 'emoji';
     $('shapeField').hidden = state.source !== 'shape';
     $('imageField').hidden = state.source !== 'image';
-    $('needImg').textContent = String(state.game === 'pattern' ? 6 : 2 * state.n - 1);
+    $('needImg').textContent = String(needFor());
   }
 
   $('segSource').addEventListener('click', function (e) {
@@ -1684,9 +1907,17 @@ window.DeckPlayer = (function () {
   });
 
   $('nRange').addEventListener('input', function () {
-    state.n = +this.value; $('nVal').textContent = this.value; $('needImg').textContent = String(state.game === 'pattern' ? 6 : 2 * state.n - 1);
+    state.n = +this.value; $('nVal').textContent = this.value; $('needImg').textContent = String(needFor());
   });
   $('nRange').addEventListener('change', regenerate);
+  $('mRange').addEventListener('input', function () {
+    state.nMiss = +this.value; $('mVal').textContent = this.value; $('needImg').textContent = String(needFor());
+  });
+  $('mRange').addEventListener('change', regenerate);
+  $('wRange').addEventListener('input', function () {
+    state.nTwin = +this.value; $('wVal').textContent = this.value; $('needImg').textContent = String(needFor());
+  });
+  $('wRange').addEventListener('change', regenerate);
   $('qRange').addEventListener('input', function () { state.count = +this.value; $('qVal').textContent = this.value; });
   $('qRange').addEventListener('change', regenerate);
 
@@ -1699,6 +1930,7 @@ window.DeckPlayer = (function () {
   }
   bindToggle('tRotate', 'rotate');
   bindToggle('tScale', 'scaleVary');
+  bindToggle('tKeep', 'keepPos');
 
   $('genBtn').addEventListener('click', function () { regenerate(); say('已重新出題'); });
   $('playBtn').addEventListener('click', function () { play(0); });
