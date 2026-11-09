@@ -4,198 +4,177 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;font-size:14px;background:#EDF1E7}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;font-size:14px;background:#FBF8F2}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>長者遊戲簡報生成器</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap">
 
 <style>
-/* ===== 大地青：鼠尾草霧白底、青苔墨字、陶土與沙金點綴 ===== */
+/* ===== 米白繽紛：乾淨米白底、白色卡片，紅黃綠藍靛紫六色點綴（固定淺色，不跟系統變暗） ===== */
 :root{
-  --ground:#EDF1E7;
-  --surface:#FBFCF8;
-  --surface-2:#F2F5EC;
-  --line:#CCD6C3;
-  --line-soft:#E0E7D7;
-  --ink:#213830;
-  --ink-2:#4B6257;
-  --ink-3:#768A7C;
-  --teal:#3B8574;
-  --teal-deep:#2B6A5B;
-  --teal-soft:#DCEBE3;
-  --clay:#BC7448;
-  --sand:#D7AC63;
-  --on-teal:#FFFFFF;
-  --shadow:0 1px 2px rgba(33,56,48,.06), 0 14px 32px -18px rgba(33,56,48,.32);
+  color-scheme:light;
+  --ground:#FBF8F2;
+  --surface:#FFFFFF;
+  --surface-2:#FAF6EE;
+  --line:#E8E1D3;
+  --line-soft:#F0EBE0;
+  --ink:#2A2A35;
+  --ink-2:#55556A;
+  --ink-3:#8A8796;
+  --red:#E5484D; --yellow:#F5A300; --green:#2EA36A; --blue:#2F7FE0; --indigo:#4F51D8; --purple:#9450C9;
+  --red-soft:#FDECEC; --yellow-soft:#FFF5DB; --green-soft:#E6F6EE; --blue-soft:#E8F1FD; --indigo-soft:#ECECFC; --purple-soft:#F4EBFB;
+  --teal:var(--blue); --teal-deep:#1F5FB8; --teal-soft:var(--blue-soft); --on-teal:#FFFFFF;
+  --clay:var(--red); --sand:var(--yellow);
+  --rainbow:linear-gradient(90deg,var(--red),var(--yellow),var(--green),var(--blue),var(--indigo),var(--purple));
+  --shadow:0 1px 2px rgba(40,36,30,.05), 0 12px 28px -18px rgba(40,36,30,.28);
   --radius:18px;
   --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   --serif:"Noto Serif TC","Songti TC",serif;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --ground:#121915; --surface:#19221D; --surface-2:#16201B; --line:#31423A; --line-soft:#26332D;
-    --ink:#E6EEE5; --ink-2:#B3C3B6; --ink-3:#8A9C8F; --teal:#79C1AC; --teal-deep:#9AD6C4; --teal-soft:#21352E;
-    --clay:#E19F78; --sand:#E5C283; --on-teal:#0F1D18;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -16px rgba(0,0,0,.7);
-  }
-}
-:root[data-theme="dark"]{
-  --ground:#121915; --surface:#19221D; --surface-2:#16201B; --line:#31423A; --line-soft:#26332D;
-  --ink:#E6EEE5; --ink-2:#B3C3B6; --ink-3:#8A9C8F; --teal:#79C1AC; --teal-deep:#9AD6C4; --teal-soft:#21352E;
-  --clay:#E19F78; --sand:#E5C283; --on-teal:#0F1D18;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -16px rgba(0,0,0,.7);
-}
-
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{
-  margin:0; background:var(--ground); color:var(--ink);
-  font-family:var(--sans); font-size:16px; line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-}
-.wrap{position:relative; z-index:2; max-width:1200px; margin:-34px auto 0; padding-inline:20px; padding-block:0 64px}
+body{margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased}
+.wrap{position:relative; z-index:2; max-width:1240px; margin:0 auto; padding:0 20px 64px}
 h1,h2,h3{font-family:var(--serif); font-weight:900; text-wrap:balance; margin:0}
 
-/* ---------- 標頭：青山遠景 ---------- */
-.hero{
-  position:relative; z-index:1; padding:40px 0 96px; color:#fff; overflow:hidden;
+/* ---------- 標頭：米白底＋彩色紙片 ---------- */
+.hero{position:relative; padding:34px 0 30px; overflow:hidden; background:var(--ground)}
+.hero::before{content:""; position:absolute; left:0; right:0; top:0; height:6px; background:var(--rainbow)}
+.hero::after{content:""; position:absolute; inset:0; pointer-events:none; opacity:.9;
   background:
-    radial-gradient(120% 90% at 85% 0%, rgba(215,172,99,.30) 0%, transparent 55%),
-    linear-gradient(160deg,#24493F 0%,#3B7566 52%,#6F9E86 100%);
-}
-.hills{position:absolute; left:0; right:0; bottom:-1px; width:100%; height:90px; display:block}
-.hills .far{fill:#9CBFA6; opacity:.45}
-.hills .mid{fill:#C9DCC4; opacity:.55}
-.hills .near{fill:var(--ground)}
-.hero-in{position:relative; max-width:1200px; margin:0 auto; padding-inline:20px}
-.kraft{
-  display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.14); color:#F4ECD8;
-  border:1px solid rgba(255,255,255,.28); border-radius:999px;
-  font-size:12.5px; font-weight:700; letter-spacing:.18em; padding:6px 14px;
-}
-.kraft::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--sand)}
-.hero h1{color:#fff; font-size:clamp(30px,4.8vw,48px); line-height:1.15; margin-top:16px; letter-spacing:.02em}
-.hero h1 em{font-style:normal; color:#F1D49A}
-.hero p{margin:14px 0 0; color:#DCEBE2; max-width:60ch; font-size:16px; line-height:1.75}
-.hero p b{color:#fff; font-weight:700}
-.games{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0; padding:0; list-style:none}
-.games li{font-size:13.5px; padding:5px 12px; border-radius:999px; background:rgba(16,40,33,.28); color:#EAF3EC; border:1px solid rgba(255,255,255,.16)}
-.games li b{color:#F1D49A; margin-right:4px}
+    radial-gradient(circle at 92% 22%, var(--yellow-soft) 0 70px, transparent 71px),
+    radial-gradient(circle at 80% 78%, var(--blue-soft) 0 46px, transparent 47px),
+    radial-gradient(circle at 70% 18%, var(--purple-soft) 0 28px, transparent 29px),
+    radial-gradient(circle at 97% 70%, var(--green-soft) 0 34px, transparent 35px),
+    radial-gradient(circle at 62% 70%, var(--red-soft) 0 22px, transparent 23px)}
+.hills{display:none}
+.hero-in{position:relative; z-index:1; max-width:1240px; margin:0 auto; padding-inline:20px}
+.kraft{display:inline-flex; align-items:center; gap:8px; background:var(--surface); color:var(--ink-2);
+  border:1px solid var(--line); border-radius:999px; font-size:13px; font-weight:700; letter-spacing:.12em; padding:6px 14px}
+.kraft::before{content:""; width:28px; height:6px; border-radius:3px; background:var(--rainbow)}
+.hero h1{color:var(--ink); font-size:clamp(30px,4.6vw,48px); line-height:1.15; margin-top:14px; letter-spacing:.02em}
+.hero h1 em{font-style:normal; background:linear-gradient(90deg,var(--red),var(--purple)); -webkit-background-clip:text; background-clip:text; color:transparent}
+.hero p{margin:12px 0 0; color:var(--ink-2); max-width:60ch; font-size:16px; line-height:1.75}
+.games{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0; padding:0; list-style:none}
+.games li{font-size:14px; padding:5px 12px; border-radius:999px; color:var(--ink-2); background:var(--surface); border:1.5px solid var(--line)}
+.games li b{margin-right:5px}
+.games li:nth-child(8n+1){border-color:#F6B9BB} .games li:nth-child(8n+1) b{color:var(--red)}
+.games li:nth-child(8n+2){border-color:#F8D58A} .games li:nth-child(8n+2) b{color:#B87800}
+.games li:nth-child(8n+3){border-color:#A9DCC2} .games li:nth-child(8n+3) b{color:var(--green)}
+.games li:nth-child(8n+4){border-color:#AFCDF5} .games li:nth-child(8n+4) b{color:var(--blue)}
+.games li:nth-child(8n+5){border-color:#C3C4F3} .games li:nth-child(8n+5) b{color:var(--indigo)}
+.games li:nth-child(8n+6){border-color:#D9C0EE} .games li:nth-child(8n+6) b{color:var(--purple)}
+.games li:nth-child(8n+7){border-color:#F6B9BB} .games li:nth-child(8n+7) b{color:var(--red)}
+.games li:nth-child(8n){border-color:#A9DCC2} .games li:nth-child(8n) b{color:var(--green)}
 
 /* ---------- layout ---------- */
-.console{display:grid; grid-template-columns:340px minmax(0,1fr); gap:22px; align-items:start}
-.panel{background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius); box-shadow:var(--shadow)}
-.panel > header{
-  display:flex; align-items:baseline; gap:10px; justify-content:space-between;
-  padding:16px 20px; border-bottom:1px solid var(--line-soft);
-}
+.console{display:grid; grid-template-columns:350px minmax(0,1fr); gap:22px; align-items:start}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+.panel > header{display:flex; align-items:baseline; gap:10px; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--line-soft)}
 .panel > header h2{font-size:18px; color:var(--ink)}
 .panel > header .hint{font-size:12.5px; color:var(--ink-3)}
 .panel .body{padding:20px}
-
 .rail{position:sticky; top:16px; max-height:calc(100vh - 32px); display:flex; flex-direction:column}
 .rail .body{overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--line) transparent}
 .preview-panel{min-width:0}
 
 /* ---------- form ---------- */
 .field + .field{margin-top:22px}
-#matchOnly, #missingOnly, #twinOnly, #patternOnly, #switchField, #themeField, #shapeField, #imageField{margin-top:22px}
-.label{
-  display:flex; justify-content:flex-start; align-items:center; gap:8px;
-  font-size:13px; font-weight:700; letter-spacing:.14em; color:var(--ink-2); margin-bottom:10px;
-}
-.label::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--teal); flex:none}
-.label b{margin-left:auto; font-size:20px; font-weight:900; color:var(--teal-deep); letter-spacing:0; font-variant-numeric:tabular-nums}
+#matchOnly, #missingOnly, #twinOnly, #oddOnly, #countOnly, #memoryOnly, #shadowOnly, #patternOnly, #switchField, #themeField, #shapeField, #imageField{margin-top:22px}
+.label{display:flex; justify-content:flex-start; align-items:center; gap:8px; font-size:13.5px; font-weight:700; letter-spacing:.1em; color:var(--ink-2); margin-bottom:10px}
+.label::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--dot,var(--blue)); flex:none}
+.rail .body > :nth-child(6n+1) .label, .rail .body > .field:nth-child(6n+1) > .label{--dot:var(--red)}
+.rail .body > :nth-child(6n+2) .label{--dot:var(--yellow)}
+.rail .body > :nth-child(6n+3) .label{--dot:var(--green)}
+.rail .body > :nth-child(6n+4) .label{--dot:var(--blue)}
+.rail .body > :nth-child(6n+5) .label{--dot:var(--indigo)}
+.rail .body > :nth-child(6n) .label{--dot:var(--purple)}
+.label b{margin-left:auto; font-size:20px; font-weight:900; color:var(--ink); letter-spacing:0; font-variant-numeric:tabular-nums}
 
 .seg{display:grid; grid-template-columns:repeat(3,1fr); gap:5px; background:var(--surface-2); padding:5px; border-radius:13px; border:1px solid var(--line-soft)}
-.seg button{
-  font:inherit; font-size:15px; font-weight:700; color:var(--ink-2); min-height:42px;
-  background:transparent; border:0; border-radius:9px; padding:8px 4px; cursor:pointer; transition:background .15s, color .15s;
-}
-.seg button[aria-pressed="true"]{background:var(--teal); color:var(--on-teal); box-shadow:0 4px 12px -6px rgba(43,106,91,.7)}
-.seg button:hover:not([aria-pressed="true"]){color:var(--ink); background:var(--teal-soft)}
+.seg button{font:inherit; font-size:15px; font-weight:700; color:var(--ink-2); min-height:42px; background:transparent; border:0; border-radius:9px; padding:8px 4px; cursor:pointer; transition:background .15s, color .15s}
+.seg button[aria-pressed="true"]{background:var(--blue); color:#fff; box-shadow:0 4px 12px -6px rgba(47,127,224,.7)}
+.seg button:hover:not([aria-pressed="true"]){color:var(--ink); background:var(--blue-soft)}
+.seg button:disabled{opacity:.4; cursor:not-allowed}
+/* 遊戲類型：每個玩法一個顏色 */
+#segGame button{position:relative; padding-left:22px}
+#segGame button::before{content:""; position:absolute; left:12px; top:50%; width:9px; height:9px; margin-top:-4.5px; border-radius:50%; background:var(--gc)}
+#segGame button:nth-child(1){--gc:var(--red)} #segGame button:nth-child(2){--gc:var(--yellow)}
+#segGame button:nth-child(3){--gc:var(--green)} #segGame button:nth-child(4){--gc:var(--blue)}
+#segGame button:nth-child(5){--gc:var(--indigo)} #segGame button:nth-child(6){--gc:var(--purple)}
+#segGame button:nth-child(7){--gc:#E2733B} #segGame button:nth-child(8){--gc:#1E9FB0}
+#segGame button[aria-pressed="true"]{background:var(--gc); color:#fff; box-shadow:0 4px 12px -6px rgba(0,0,0,.35)}
+#segGame button[aria-pressed="true"]::before{background:#fff}
+#segGame button:hover:not([aria-pressed="true"]){background:var(--surface)}
 .hint-s, .fhint{margin:9px 0 0; font-size:13.5px; color:var(--ink-3); line-height:1.6}
 
 .chips{display:flex; flex-wrap:wrap; gap:8px}
-.chip{
-  font:inherit; font-size:14.5px; font-weight:500; cursor:pointer; min-height:40px;
-  padding:7px 15px; border-radius:999px; border:1px solid var(--line);
-  background:var(--surface); color:var(--ink-2);
-}
-.chip[aria-pressed="true"]{background:var(--teal-soft); border-color:var(--teal); color:var(--teal-deep); font-weight:700}
-.chip:hover:not([aria-pressed="true"]){border-color:var(--teal); color:var(--ink)}
+.chip{font:inherit; font-size:14.5px; font-weight:500; cursor:pointer; min-height:40px; padding:7px 15px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--yellow-soft); border-color:var(--yellow); color:#8A5A00; font-weight:700}
+.chip:hover:not([aria-pressed="true"]){border-color:var(--yellow); color:var(--ink)}
 
-input[type=range]{width:100%; accent-color:var(--teal); height:32px; cursor:pointer}
+input[type=range]{width:100%; accent-color:var(--blue); height:32px; cursor:pointer}
 .ticks{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-3); font-variant-numeric:tabular-nums; margin-top:-4px}
-input[type=text]{
-  width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--surface);
-  border:1px solid var(--line); border-radius:11px; padding:10px 13px; min-height:44px;
-}
-input[type=text]:focus{border-color:var(--teal); outline:none; box-shadow:0 0 0 3px var(--teal-soft)}
+input[type=text]{width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:11px; padding:10px 13px; min-height:44px}
+input[type=text]:focus{border-color:var(--blue); outline:none; box-shadow:0 0 0 3px var(--blue-soft)}
 input[type=text]::placeholder{color:var(--ink-3)}
 
 .switch{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid var(--line-soft)}
 .switch:first-of-type{border-top:0; padding-top:0}
 .switch .txt{font-size:15px; font-weight:500}
 .switch .txt small{display:block; color:var(--ink-3); font-size:13px; line-height:1.5; font-weight:400}
-.toggle{
-  flex:none; width:52px; height:30px; border-radius:999px; border:1px solid var(--line);
-  background:var(--surface-2); position:relative; cursor:pointer; transition:background .18s, border-color .18s;
-}
+.toggle{flex:none; width:52px; height:30px; border-radius:999px; border:1px solid var(--line); background:var(--surface-2); position:relative; cursor:pointer; transition:background .18s, border-color .18s}
 .toggle::after{content:""; position:absolute; inset:3px auto 3px 3px; width:22px; border-radius:50%; background:var(--ink-3); transition:transform .18s, background .18s}
-.toggle[aria-pressed="true"]{background:var(--teal); border-color:var(--teal)}
-.toggle[aria-pressed="true"]::after{transform:translateX(22px); background:var(--on-teal)}
+.toggle[aria-pressed="true"]{background:var(--green); border-color:var(--green)}
+.toggle[aria-pressed="true"]::after{transform:translateX(22px); background:#fff}
 
-.btn{
-  font:inherit; font-weight:700; cursor:pointer; border-radius:12px; min-height:44px;
-  padding:11px 18px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
-  display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:border-color .15s, background .15s, filter .15s;
-}
-.btn:hover{border-color:var(--teal); background:var(--teal-soft)}
-.btn.primary{background:var(--teal); border-color:var(--teal); color:var(--on-teal); font-size:16.5px; padding:12px 22px}
-.btn.primary:hover{filter:brightness(1.07); background:var(--teal)}
-.btn.clay{background:var(--clay); border-color:var(--clay); color:#fff}
-.btn.clay:hover{filter:brightness(1.06); background:var(--clay)}
+.btn{font:inherit; font-weight:700; cursor:pointer; border-radius:12px; min-height:44px; padding:11px 18px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:border-color .15s, background .15s, filter .15s}
+.btn:hover{border-color:var(--blue); background:var(--blue-soft)}
+.btn.primary{background:var(--red); border-color:var(--red); color:#fff; font-size:16.5px; padding:12px 22px}
+.btn.primary:hover{filter:brightness(1.06); background:var(--red)}
+#pptBtn{border-color:#F3C3A8; color:#B4471D} #pptBtn:hover{background:#FFF1E8}
+#htmlBtn{border-color:#AFCDF5; color:#1F5FB8}
 .btn.wide{width:100%}
 .btn:disabled{opacity:.45; cursor:not-allowed; filter:none}
 .btn .sub{font-weight:500; font-size:12.5px; opacity:.85}
-:focus-visible{outline:3px solid var(--sand); outline-offset:2px}
+:focus-visible{outline:3px solid var(--yellow); outline-offset:2px}
 
 .themes{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
-.thchip{
-  display:flex; align-items:center; gap:9px; padding:8px 9px; cursor:pointer; font:inherit; min-height:48px;
-  font-size:14.5px; font-weight:700; color:var(--ink-2); text-align:left;
-  border:1.5px solid var(--line); border-radius:12px; background:var(--surface);
-}
-.thchip[aria-pressed="true"]{border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-soft); color:var(--ink)}
+.thchip{display:flex; align-items:center; gap:9px; padding:8px 9px; cursor:pointer; font:inherit; min-height:48px; font-size:14.5px; font-weight:700; color:var(--ink-2); text-align:left; border:1.5px solid var(--line); border-radius:12px; background:var(--surface)}
+.thchip[aria-pressed="true"]{border-color:var(--purple); box-shadow:0 0 0 3px var(--purple-soft); color:var(--ink)}
 .thchip:hover:not([aria-pressed="true"]){border-color:var(--ink-3)}
-.sw{width:32px; height:32px; border-radius:9px; flex:none; position:relative; overflow:hidden; border:1px solid rgba(0,0,0,.18)}
-.sw i{position:absolute; left:4px; top:7px; width:17px; height:17px; border-radius:50%; display:block}
+.sw{width:32px; height:32px; border-radius:9px; flex:none; position:relative; overflow:hidden; border:1px solid rgba(0,0,0,.15)}
+.sw i{position:absolute; left:4px; top:7px; width:17px; height:17px; border-radius:50%; display:block; border:1px solid rgba(0,0,0,.12)}
 .sw b{position:absolute; right:3px; bottom:4px; width:11px; height:11px; border-radius:3px; display:block}
 
 .uploader{border:2px dashed var(--line); border-radius:14px; padding:18px; text-align:center; color:var(--ink-2); font-size:14.5px; background:var(--surface-2)}
 .uploader p{margin:0 0 10px}
 .mygrid{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
 .mygrid figure{margin:0; position:relative; width:56px; height:56px; border-radius:11px; overflow:hidden; border:1px solid var(--line); background:var(--surface-2)}
+.mygrid figure.cut{background:repeating-conic-gradient(#EFEAE0 0 25%, #fff 0 50%) 0 0/12px 12px; border-color:var(--green)}
+.mygrid figure.cut::after{content:"已去背"; position:absolute; left:0; right:0; bottom:0; font-size:10px; line-height:14px; text-align:center; color:#fff; background:var(--green)}
 .mygrid img{width:100%; height:100%; object-fit:contain}
-.mygrid button{position:absolute; top:0; right:0; width:24px; height:24px; border:0; border-radius:0 0 0 9px; background:var(--ink); color:var(--surface); font-size:13px; line-height:24px; cursor:pointer; padding:0}
+.mygrid button{position:absolute; top:0; right:0; width:24px; height:24px; border:0; border-radius:0 0 0 9px; background:var(--ink); color:#fff; font-size:13px; line-height:24px; cursor:pointer; padding:0}
+.cutbar{display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap}
+.cutbar .btn{min-height:40px; padding:8px 14px; border-color:var(--green); color:#1E7A4C}
+.cutbar .btn:hover{background:var(--green-soft)}
+.cutbar span{font-size:13px; color:var(--ink-3); flex:1 1 160px; line-height:1.5}
 
 /* ---------- preview ---------- */
-.toolbar{display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line-soft); background:var(--surface-2); border-radius:var(--radius) var(--radius) 0 0}
+.toolbar{display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line-soft); background:var(--surface); border-radius:var(--radius) var(--radius) 0 0; position:relative}
+.toolbar::after{content:""; position:absolute; left:18px; right:18px; bottom:-1px; height:3px; border-radius:3px; background:var(--rainbow); opacity:.7}
 .toolbar .btn{font-size:15px}
 .toolbar .meta{margin-left:auto; font-size:13px; color:var(--ink-3)}
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; padding:18px}
-.thumb{
-  background:var(--surface-2); border:1px solid var(--line-soft); border-radius:14px; padding:10px 10px 9px;
-  cursor:pointer; text-align:left; font:inherit; color:inherit; transition:border-color .15s, transform .15s, box-shadow .15s;
-}
-.thumb:hover{border-color:var(--teal); transform:translateY(-2px); box-shadow:0 10px 20px -14px rgba(33,56,48,.5)}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; padding:18px}
+.thumb{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 10px 9px; cursor:pointer; text-align:left; font:inherit; color:inherit; transition:border-color .15s, transform .15s, box-shadow .15s}
+.thumb:hover{border-color:var(--blue); transform:translateY(-2px); box-shadow:0 10px 20px -14px rgba(40,36,30,.45)}
 .thumb .no{font-size:12.5px; font-weight:700; letter-spacing:.1em; color:var(--ink-3); display:flex; justify-content:space-between; align-items:center}
-.thumb .no .ans{font-size:16px; letter-spacing:0; display:inline-flex; align-items:center; gap:4px}
-.thumb .no .ans::before{content:"答"; font-size:11px; color:var(--ink-3); letter-spacing:0}
+.thumb .no .ans{font-size:14px; letter-spacing:0; display:inline-flex; align-items:center; gap:4px; color:var(--ink)}
+.thumb .no .ans::before{content:"答"; font-size:11px; color:#fff; background:var(--purple); border-radius:5px; padding:0 4px; letter-spacing:0}
 .thumb .pair{display:flex; align-items:center; gap:6px; margin-top:8px; padding:10px; border-radius:11px; background:var(--stage,transparent)}
-.thumb .pair .disc{flex:1}
+.thumb .pair .disc, .thumb .pair .board{flex:1}
 .thumb .pair .sep{font-size:12px; color:var(--txt-2,var(--ink-3))}
 
 .disc{position:relative; aspect-ratio:1; border-radius:50%; background:var(--card,var(--surface)); border:2px solid var(--card-line,var(--ink)); overflow:hidden}
@@ -203,47 +182,33 @@ input[type=text]::placeholder{color:var(--ink-3)}
 .sym svg{width:100%; height:100%; display:block}
 .sym img{width:100%; height:100%; object-fit:contain; display:block}
 .sym.ghost{visibility:hidden}
-.board{display:block; position:relative; aspect-ratio:16/9; border-radius:10px; background:var(--card,var(--surface)); border:2px solid var(--card-line,var(--ink)); overflow:hidden}
+.board{display:block; position:relative; aspect-ratio:2.1; border-radius:10px; background:var(--card,var(--surface)); border:2px solid var(--card-line,var(--ink)); overflow:hidden}
+.board.b43{aspect-ratio:4/3}
 .thumb .solo{display:block; margin-top:8px; padding:10px; border-radius:11px; background:var(--stage,transparent)}
-
-.prow{display:flex; align-items:center; justify-content:center; gap:5px; margin-top:9px;
-  padding:12px 9px; border-radius:11px; background:var(--stage,#1F3A33)}
+.prow{display:flex; align-items:center; justify-content:center; gap:5px; margin-top:9px; padding:12px 9px; border-radius:11px; background:var(--stage,#FBF7EE)}
 .thumb .fys-num{font-size:17px}
-.thumb .fys-cell.shadow{background:var(--card,#F6F1E4)}
-.thumb .fys-cell{flex:1 1 0; width:auto; max-width:46px; border-width:2px; border-radius:8px; box-shadow:none;
-  background:var(--card,#F6F1E4); border-color:var(--card-line,#1F3A33)}
-.thumb .fys-cell.blank{font-size:15px; border-width:2px; border-style:dashed;
-  background:var(--blank,#28473F); border-color:var(--hi,#E3B76A); color:var(--hi,#E3B76A)}
+.thumb .fys-cell.shadow, .thumb .fys-cell.zoom{background:var(--card,#fff)}
+.thumb .fys-cell{flex:1 1 0; width:auto; max-width:46px; border-width:2px; border-radius:8px; box-shadow:none; background:var(--card,#fff); border-color:var(--card-line,#3A3A48)}
+.thumb .fys-cell.blank{font-size:15px; border-width:2px; border-style:dashed; background:var(--blank,#F3EEE2); border-color:var(--hi,#D6336C); color:var(--hi,#D6336C)}
 .empty{padding:46px 20px; text-align:center; color:var(--ink-3); grid-column:1/-1}
 .note{font-size:13.5px; color:var(--ink-3); padding:0 18px 18px; margin:0}
 
-.status{
-  position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(12px);
-  background:var(--ink); color:var(--surface); padding:12px 20px; border-radius:999px; font-size:15px; font-weight:500;
-  box-shadow:0 12px 34px -12px rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:60; max-width:90vw; text-align:center;
-}
+.status{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(12px); background:var(--ink); color:#fff; padding:12px 20px; border-radius:999px; font-size:15px; font-weight:500;
+  box-shadow:0 12px 34px -12px rgba(0,0,0,.45); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:60; max-width:90vw; text-align:center}
 .status.on{opacity:1; transform:translateX(-50%) translateY(0)}
-
-.foot{max-width:1200px; margin:0 auto; padding:0 20px 40px; font-size:13px; color:var(--ink-3); text-align:center}
 
 /* ---------- 平板／手機 ---------- */
 @media (max-width:880px){
   .console{grid-template-columns:1fr; gap:16px}
   .rail{position:static; max-height:none}
   .rail .body{overflow:visible}
-  .hero{padding:28px 0 84px}
-  .wrap{margin-top:-28px; padding-inline:14px; padding-bottom:120px}
+  .hero{padding:26px 0 22px}
+  .wrap{padding-inline:14px; padding-bottom:120px}
   .hero-in{padding-inline:16px}
-  /* 播放、下載鈕固定在畫面底部，設定再長也隨手可按 */
-  .toolbar{
-    position:fixed; left:0; right:0; bottom:0; z-index:50; margin:0;
-    display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:8px;
-    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-    border-radius:18px 18px 0 0; border:1px solid var(--line-soft); border-bottom:0;
-    background:color-mix(in srgb, var(--surface) 94%, transparent);
-    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
-    box-shadow:0 -10px 30px -18px rgba(33,56,48,.45);
-  }
+  .toolbar{position:fixed; left:0; right:0; bottom:0; z-index:50; margin:0; display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:8px;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom)); border-radius:18px 18px 0 0; border:1px solid var(--line); border-bottom:0;
+    background:rgba(255,255,255,.95); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 -10px 30px -18px rgba(40,36,30,.4)}
+  .toolbar::after{display:none}
   .toolbar .btn{padding:8px 6px; font-size:14px; flex-direction:column; gap:0; line-height:1.25; min-height:52px}
   .toolbar .meta{display:none}
   .status{bottom:96px}
@@ -251,52 +216,54 @@ input[type=text]::placeholder{color:var(--ink-3)}
   .preview-panel > .ph{padding:14px 16px; border-bottom:1px solid var(--line-soft)}
 }
 @media (min-width:881px){ .preview-panel > .ph{display:none} }
-@media (max-width:520px){
-  .grid{grid-template-columns:1fr}
-  .panel .body{padding:16px}
-}
-
+@media (max-width:520px){ .grid{grid-template-columns:1fr} .panel .body{padding:16px} }
 @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important} }
 </style>
 
 <style id="playerCSS">
 /* ===== 播放模式（生成器與離線檔共用） ===== */
 .fys{
-  --stage:#1F3A33; --card:#F6F1E4; --card-line:#1F3A33;
-  --hi:#E3B76A; --hi2:#D07A4B; --txt:#EEF4EC; --txt-2:#A9C3B6;
-  --line2:#3E6157; --btn:#2C4C43; --btnh:#365B51; --blank:#28473F; --arrow:#5E8579; --goTxt:#2A1C0E;
+  --stage:#FBF7EE; --card:#FFFFFF; --card-line:#3A3A48;
+  --hi:#D6336C; --hi2:#F03E3E; --txt:#2A2A35; --txt-2:#6B6B7A;
+  --line2:#E3DCCB; --btn:#EFE9DC; --btnh:#E5DECF; --blank:#F3EEE2; --arrow:#B9B2A2; --goTxt:#FFFFFF;
+  /* 選項與進度點的彩虹色 */
+  --c1:#E5484D; --c2:#F5A300; --c3:#2EA36A; --c4:#2F7FE0; --c5:#4F51D8; --c6:#9450C9;
   position:fixed; inset:0; z-index:100; background:var(--stage); color:var(--txt);
   font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   display:flex; flex-direction:column; overscroll-behavior:none;
 }
 .fys.inline{position:static; height:100%}
 .fys *{box-sizing:border-box}
-.fys-top{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 22px}
-.fys-no{font-size:clamp(20px,2.4vw,30px); font-weight:900; letter-spacing:.04em; font-variant-numeric:tabular-nums}
-.fys-no em{font-style:normal; color:var(--hi); font-size:1.28em}
+.fys-top{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 18px; flex:none}
+.fys-no{font-size:clamp(18px,2vw,26px); font-weight:900; letter-spacing:.04em; font-variant-numeric:tabular-nums; white-space:nowrap}
+.fys-no em{font-style:normal; color:var(--hi); font-size:1.25em}
 .fys-dots{display:flex; gap:6px; flex-wrap:wrap; max-width:46vw; justify-content:center}
 .fys-dots i{width:10px; height:10px; border-radius:50%; background:var(--line2); display:block}
-.fys-dots i.on{background:var(--hi)}
-.fys-dots i.now{background:var(--hi2); transform:scale(1.45)}
-.fys-tools{display:flex; gap:8px}
+.fys-dots i.on:nth-child(6n+1){background:var(--c1)} .fys-dots i.on:nth-child(6n+2){background:var(--c2)}
+.fys-dots i.on:nth-child(6n+3){background:var(--c3)} .fys-dots i.on:nth-child(6n+4){background:var(--c4)}
+.fys-dots i.on:nth-child(6n+5){background:var(--c5)} .fys-dots i.on:nth-child(6n){background:var(--c6)}
+.fys-dots i.now{background:var(--hi); transform:scale(1.45)}
+.fys-tools{display:flex; gap:6px}
 .fys-tools button{
-  font:inherit; font-size:15px; font-weight:700; color:var(--txt); background:transparent;
-  border:1.5px solid var(--line2); border-radius:10px; padding:8px 13px; cursor:pointer;
+  font:inherit; font-size:14px; font-weight:700; color:var(--txt); background:transparent; white-space:nowrap;
+  border:1.5px solid var(--line2); border-radius:10px; padding:6px 11px; cursor:pointer;
 }
 .fys-tools button:hover{border-color:var(--hi); color:var(--hi)}
 
-.fys-stage{flex:1; display:flex; align-items:center; justify-content:center; gap:clamp(8px,2.4vw,44px); padding:0 clamp(16px,3vw,48px); min-height:0; position:relative}
+/* 舞台：用容器尺寸（cqw / cqh）決定圖卡大小，永遠不會蓋到上下的文字 */
+.fys-stage{flex:1 1 auto; min-height:0; position:relative; container-type:size;
+  display:flex; align-items:center; justify-content:center; gap:2.2cqw; padding:0 12px}
 .fys-card{
   position:relative; aspect-ratio:1; border-radius:50%;
-  width:min(39vw, 70vh); background:var(--card); border:6px solid var(--card-line);
-  box-shadow:0 26px 60px -26px rgba(0,0,0,.85); overflow:hidden; flex:none;
+  width:min(44cqw, 96cqh); background:var(--card); border:5px solid var(--card-line);
+  box-shadow:0 18px 40px -24px rgba(0,0,0,.45); overflow:hidden; flex:none;
 }
-.fys-split{display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--txt-2); flex:none}
-.fys-split .bar{width:3px; flex:1; background:repeating-linear-gradient(to bottom,var(--line2) 0 12px,transparent 12px 24px); min-height:60px}
+.fys-split{display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--txt-2); flex:none; align-self:stretch; justify-content:center}
+.fys-split .bar{width:3px; flex:1; max-height:30cqh; background:repeating-linear-gradient(to bottom,var(--line2) 0 12px,transparent 12px 24px)}
 .fys-split .q{
-  width:clamp(44px,5vw,64px); height:clamp(44px,5vw,64px); border-radius:50%;
-  background:var(--hi2); color:var(--card); display:flex; align-items:center; justify-content:center;
-  font-size:clamp(24px,2.8vw,36px); font-weight:900; flex:none; box-shadow:0 8px 22px -8px rgba(0,0,0,.6);
+  width:clamp(40px,4.4cqw,64px); height:clamp(40px,4.4cqw,64px); border-radius:50%;
+  background:var(--c6); color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:clamp(22px,2.6cqw,36px); font-weight:900; flex:none; box-shadow:0 8px 22px -10px rgba(0,0,0,.5);
 }
 .fys-sym{position:absolute; display:flex; align-items:center; justify-content:center; line-height:1; user-select:none; transition:opacity .45s ease, filter .45s ease}
 .fys-sym svg{width:100%; height:100%; display:block}
@@ -305,25 +272,38 @@ input[type=text]::placeholder{color:var(--ink-3)}
 .fys.revealed .fys-sym.hit{opacity:1; filter:none; animation:fys-pop .75s cubic-bezier(.22,1.3,.36,1) both}
 .fys-sym.hit::before{
   content:""; position:absolute; inset:-16%; border-radius:50%; border:5px solid var(--hi2);
-  opacity:0; box-shadow:0 0 0 6px color-mix(in srgb, var(--hi) 38%, transparent);
+  opacity:0; box-shadow:0 0 0 6px color-mix(in srgb, var(--hi2) 25%, transparent);
 }
 .fys.revealed .fys-sym.hit::before{animation:fys-ring .75s .12s ease-out both}
+/* 數一數：公布答案時在每個目標上標號 */
+.fys-sym[data-n]::after{
+  content:attr(data-n); position:absolute; right:-14%; top:-14%; min-width:1.5em; height:1.5em; padding:0 .2em;
+  border-radius:999px; background:var(--hi2); color:#fff; font-weight:900; font-size:max(16px, 3.6cqh);
+  display:flex; align-items:center; justify-content:center; opacity:0; transform:rotate(calc(var(--r,0deg) * -1))}
+.fys.revealed .fys-sym[data-n]::after{opacity:1; transition:opacity .3s .5s}
 @keyframes fys-pop{0%{transform:scale(var(--s,1)) rotate(var(--r,0deg))}45%{transform:scale(calc(var(--s,1)*1.45)) rotate(var(--r,0deg))}100%{transform:scale(calc(var(--s,1)*1.22)) rotate(var(--r,0deg))}}
 @keyframes fys-ring{0%{opacity:0; transform:scale(.5)}55%{opacity:1; transform:scale(1.06)}100%{opacity:1; transform:scale(1)}}
 
-.fys-bottom{display:flex; align-items:center; justify-content:center; gap:clamp(8px,1.6vw,18px); padding:12px 18px 20px; flex-wrap:wrap}
+/* 底部：一行放提示語和按鈕，按鈕小一點，把空間留給圖卡 */
+.fys-bottom{flex:none; display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:10px 14px;
+  padding:8px 18px calc(12px + env(safe-area-inset-bottom))}
+.fys-bottom > .fys-btn[data-prev]{grid-column:1; grid-row:2}
+.fys-bottom > .fys-say{grid-column:2; grid-row:2}
+.fys-bottom > .fys-btn[data-go]{grid-column:3; grid-row:2}
+.fys-bottom > .fys-btn[data-alt]{grid-column:4; grid-row:2}
+.fys-rule{grid-column:1/-1; grid-row:1; font-size:clamp(15px,1.8vw,24px); font-weight:700; color:var(--hi); margin:0; text-align:center}
+.fys-rule:empty{display:none}
 .fys-say{
-  font-size:clamp(22px,3.1vw,40px); font-weight:900; letter-spacing:.03em; color:var(--txt);
-  margin:0 auto; text-align:center; flex:1 1 100%; order:-1; padding-bottom:6px;
+  font-size:clamp(20px,2.5vw,36px); font-weight:900; letter-spacing:.02em; color:var(--txt);
+  margin:0; text-align:center; line-height:1.3; min-width:0;
 }
 .fys-say b{color:var(--hi)}
 .fys-btn{
-  font:inherit; font-weight:900; cursor:pointer; border-radius:14px; border:2px solid transparent;
-  font-size:clamp(18px,2.1vw,26px); padding:clamp(10px,1.4vw,16px) clamp(18px,2.6vw,34px);
-  background:var(--btn); color:var(--txt);
+  font:inherit; font-weight:800; cursor:pointer; border-radius:12px; border:2px solid transparent; white-space:nowrap;
+  font-size:clamp(14px,1.35vw,18px); padding:8px 14px; background:var(--btn); color:var(--txt);
 }
 .fys-btn:hover{background:var(--btnh)}
-.fys-btn.go{background:var(--hi); color:var(--goTxt)}
+.fys-btn.go{background:var(--hi); color:var(--goTxt); padding:9px 20px; font-size:clamp(15px,1.5vw,20px)}
 .fys-btn.go:hover{filter:brightness(1.08)}
 .fys-btn:disabled{opacity:.35; cursor:not-allowed}
 .fys-btn:focus-visible, .fys-tools button:focus-visible{outline:3px solid var(--hi); outline-offset:3px}
@@ -332,90 +312,102 @@ input[type=text]::placeholder{color:var(--ink-3)}
 .fys-end h3{font-size:clamp(28px,4.4vw,52px); font-weight:900; margin:0; font-family:"Noto Serif TC",serif}
 .fys-end p{font-size:clamp(16px,2vw,22px); color:var(--txt-2); margin:0}
 
-
-/* --- 規律接龍版面 --- */
-.fys-stage.pat{flex-direction:column; gap:clamp(16px,4.4vh,56px)}
-.fys-seq{display:flex; align-items:center; justify-content:center; gap:clamp(4px,.8vw,14px); width:100%; overflow:hidden}
-.fys-cell{position:relative; aspect-ratio:1; width:var(--cw,min(12.5vw,17vh)); flex:none;
-  background:var(--card); border:4px solid var(--card-line); border-radius:20px;
-  box-shadow:0 14px 30px -18px rgba(0,0,0,.8)}
+/* --- 格子與選項 --- */
+.fys-stage.col{flex-direction:column; gap:4cqh}
+.fys-seq{display:flex; align-items:center; justify-content:center; gap:1cqw; width:100%; overflow:hidden}
+.fys-cell{position:relative; aspect-ratio:1; width:var(--cw,min(11.5cqw,38cqh)); flex:none;
+  background:var(--card); border:4px solid var(--card-line); border-radius:18%;
+  box-shadow:0 12px 26px -18px rgba(0,0,0,.5); overflow:hidden}
 .fys-cell.blank{background:var(--blank); border:4px dashed var(--hi); box-shadow:none;
   display:flex; align-items:center; justify-content:center; color:var(--hi);
-  font-size:min(7vw,9vh); font-weight:900; line-height:1}
+  font-size:calc(var(--cw,min(11.5cqw,38cqh)) * .55); font-weight:900; line-height:1}
 .fys-cell.blank.filled{background:var(--card); border:4px solid var(--hi2)}
 .fys-cell.blank.filled em{display:none}
-.fys-arrow{color:var(--arrow); font-size:clamp(11px,1.5vw,24px); flex:none; width:1.3em; text-align:center}
+.fys-arrow{color:var(--arrow); font-size:clamp(12px,1.6cqw,26px); flex:none; width:1.2em; text-align:center}
 .fys-it{position:absolute; display:flex; align-items:center; justify-content:center; line-height:1}
 .fys-it svg{width:100%; height:100%; display:block}
 .fys-it img{width:100%; height:100%; display:block}
-.fys-opts{display:flex; align-items:stretch; justify-content:center; gap:clamp(8px,1.8vw,26px)}
-.fys-opt{position:relative; background:transparent; border:0; padding:0; cursor:pointer;
-  display:flex; flex-direction:column; align-items:center; gap:6px; font:inherit;
+.fys-opts{display:flex; align-items:center; justify-content:center; gap:3cqw}
+.fys-opt{position:relative; background:transparent; border:0; padding:0; cursor:pointer; font:inherit;
   transition:opacity .4s ease, transform .35s ease}
-.fys-opt .lab{font-size:clamp(15px,1.7vw,22px); font-weight:900; color:var(--txt-2); letter-spacing:.08em}
-.fys-opt .fys-cell{width:var(--ow,min(13.5vw,18vh)); border-radius:22px}
+.fys-opt .fys-cell{width:var(--ow,min(14cqw,40cqh))}
+/* 選項編號：放大成彩色圓章，壓在圖卡左上角外側，不佔版面 */
+.fys-opt .lab{position:absolute; left:-.35em; top:-.35em; z-index:2; width:1.6em; height:1.6em; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900;
+  font-size:clamp(20px, calc(var(--ow,min(14cqw,40cqh)) * .26), 54px); box-shadow:0 4px 10px -4px rgba(0,0,0,.5); border:3px solid #fff}
+.fys-opt:nth-child(1) .lab{background:var(--c1)} .fys-opt:nth-child(2) .lab{background:var(--c4)}
+.fys-opt:nth-child(3) .lab{background:var(--c3)} .fys-opt:nth-child(4) .lab{background:var(--c6)}
 .fys-opt:hover .fys-cell{border-color:var(--hi)}
 .fys.revealed .fys-opt{opacity:.22}
 .fys.revealed .fys-opt.hit{opacity:1; transform:translateY(-6px)}
-.fys.revealed .fys-opt.hit .fys-cell{border-color:var(--hi2); box-shadow:0 0 0 7px color-mix(in srgb, var(--hi) 42%, transparent)}
-.fys.revealed .fys-opt.hit .lab{color:var(--hi)}
-.fys-rule{font-size:clamp(16px,2vw,27px); font-weight:700; color:var(--hi); margin:0; text-align:center;
-  flex:1 1 100%; order:-1; padding-bottom:2px; min-height:1.4em}
+.fys.revealed .fys-opt.hit .fys-cell{border-color:var(--hi2); box-shadow:0 0 0 7px color-mix(in srgb, var(--hi2) 30%, transparent)}
 @keyframes fys-fill{0%{transform:scale(.4); opacity:0}60%{transform:scale(1.18)}100%{transform:scale(1); opacity:1}}
 .fys-cell.blank.filled .fys-it{animation:fys-fill .6s cubic-bezier(.22,1.3,.36,1) both}
+.fys-stage.pat{flex-direction:column; gap:6cqh}
+.fys-stage.pat .fys-opt .fys-cell{width:var(--ow,min(13cqw,34cqh))}
 
-/* --- 數一數／影子配對／記憶考驗：上方題目、下方四選一 --- */
-.fys-stage.col{flex-direction:column; gap:clamp(12px,3.4vh,40px)}
-.fys-board.sm{width:min(84vw, calc((100vh - 430px) * 16 / 9))}
-.fys-cell.big{width:min(30vw,34vh); border-radius:28px; cursor:pointer}
+/* --- 影子配對：剪影或局部放大 --- */
+.fys-cell.big{width:min(40cqw,52cqh); cursor:pointer}
+.fys-stage.sh .fys-opt .fys-cell{width:var(--ow,min(15cqw,30cqh))}
 .fys-cell.shadow .fys-it{filter:brightness(0); transition:filter .5s ease}
-.fys.revealed .fys-cell.shadow{border-color:var(--hi2)}
+.fys-cell.zoom .fys-it{transform:scale(var(--zk,3)) !important; transform-origin:var(--zx,50%) var(--zy,50%); transition:transform .9s cubic-bezier(.3,.9,.3,1)}
+.fys.revealed .fys-cell.shadow, .fys.revealed .fys-cell.zoom{border-color:var(--hi2)}
 .fys.revealed .fys-cell.shadow .fys-it{filter:none; animation:fys-fill .6s cubic-bezier(.22,1.3,.36,1) both}
+.fys.revealed .fys-cell.zoom .fys-it{transform:none !important}
 .fys-num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font-weight:900; color:var(--card-line); font-size:min(7.5vw,10vh); font-variant-numeric:tabular-nums; line-height:1}
+  font-weight:900; color:var(--card-line); font-size:calc(var(--ow,14cqw) * .5); line-height:1}
 .fys-tgt{display:inline-block; width:1.35em; height:1.35em; vertical-align:-.3em; margin-right:.15em;
-  background:var(--card); border-radius:.3em; padding:.08em}
+  background:var(--card); border:2px solid var(--line2); border-radius:.3em; padding:.06em}
 .fys-tgt svg, .fys-tgt img{width:100%; height:100%; display:block}
 .fys-opts[hidden], .fys-board[hidden]{display:none !important}
-.fys-stage.mem .fys-opt .fys-cell{width:var(--ow,min(19vw,32vh)); border-radius:26px}
+.fys-stage.mem .fys-opt .fys-cell{width:var(--ow,min(20cqw,70cqh))}
 
 /* --- 找缺少：左右標籤＋右邊空位 --- */
-.fys-col{display:flex; flex-direction:column; align-items:center; gap:10px; flex:none}
-.fys-cap{font-size:clamp(18px,2.2vw,30px); font-weight:900; color:var(--txt-2); letter-spacing:.24em}
-.fys-col .fys-card{width:min(39vw,62vh)}
+.fys-col{display:flex; flex-direction:column; align-items:center; gap:6px; flex:none}
+.fys-cap{font-size:clamp(16px,2cqw,28px); line-height:1.2; font-weight:900; color:var(--txt-2); letter-spacing:.24em}
+.fys-col .fys-card{width:min(44cqw, calc(96cqh - 44px))}
 .fys-sym.ghost{opacity:0}
 .fys.revealed .fys-sym.ghost.hit{opacity:.62; filter:none; animation:fys-pop .75s cubic-bezier(.22,1.3,.36,1) both}
 .fys-sym.ghost.hit::before{border-style:dashed}
 
-/* --- 找相同：同一個畫面 --- */
+/* --- 畫板（找相同、數一數、記憶考驗 16:9；找不同 4:3 兩張） --- */
 .fys-board{
-  position:relative; aspect-ratio:16/9; width:min(92vw, calc((100vh - 250px) * 16 / 9));
-  background:var(--card); border:6px solid var(--card-line); border-radius:28px;
-  box-shadow:0 26px 60px -26px rgba(0,0,0,.85); overflow:hidden; flex:none;
+  position:relative; aspect-ratio:2.1; width:min(98cqw, calc(96cqh * 2.1));
+  background:var(--card); border:5px solid var(--card-line); border-radius:24px;
+  box-shadow:0 18px 40px -24px rgba(0,0,0,.45); overflow:hidden; flex:none;
 }
+.fys-board.q43{aspect-ratio:4/3; width:min(47cqw, calc(96cqh * 4 / 3))}
+.fys-stage.duo{gap:2cqw}
+/* 找不同：圈出來就好，不放大，避免圈圈互相重疊 */
+.fys.revealed .fys-stage.pair .fys-sym.hit{animation:none; transform:rotate(var(--r,0deg)) scale(var(--s,1))}
+.fys-stage.pair .fys-sym.hit::before{inset:-10%; border-width:4px}
 
-@media (max-width:820px), (orientation:portrait){
-  .fys-stage{flex-direction:column; gap:8px}
-  .fys-card{width:min(86vw, 40vh)}
-  .fys-col .fys-card{width:min(78vw, 27vh)}
-  .fys-col{gap:4px}
-  .fys-board{width:min(94vw, calc((100vh - 250px) * 16 / 9))}
-  .fys-split{flex-direction:row; width:100%; justify-content:center; gap:12px}
-  .fys-split .bar{width:auto; height:3px; flex:1; min-height:0; background:repeating-linear-gradient(to right,var(--line2) 0 12px,transparent 12px 24px)}
+/* 直式螢幕（手機）：上下排列 */
+@media (orientation:portrait), (max-width:700px){
+  .fys-stage{flex-direction:column; gap:1.5cqh}
+  .fys-stage.duo, .fys-stage.pair{flex-direction:column}
+  .fys-card{width:min(92cqw, 44cqh)}
+  .fys-col .fys-card{width:min(92cqw, calc(44cqh - 30px))}
+  .fys-board{width:min(98cqw, calc(96cqh * 2.1))}
+  .fys-board.q43{width:min(96cqw, calc(46cqh * 4 / 3))}
+  .fys-split{flex-direction:row; width:100%; align-self:auto; gap:12px}
+  .fys-split .bar{width:auto; max-height:none; height:3px; flex:1; background:repeating-linear-gradient(to right,var(--line2) 0 12px,transparent 12px 24px)}
   .fys-dots{display:none}
-  .fys-top{padding:10px 12px; gap:8px}
-  .fys-no{font-size:20px; white-space:nowrap}
-  .fys-tools{gap:6px}
-  .fys-tools button{font-size:13px; padding:7px 9px; white-space:nowrap}
-  .fys-bottom{display:grid; grid-template-columns:1fr 1.35fr 1fr; gap:8px; padding:8px 12px calc(14px + env(safe-area-inset-bottom))}
-  .fys-say, .fys-rule{grid-column:1/-1}
-  .fys-btn{font-size:16px; padding:13px 6px; white-space:nowrap}
-  .fys-stage.pat{flex-direction:column}
-  .fys-cell{width:min(17vw,11vh)}
-  .fys-opt .fys-cell{width:min(19vw,12vh)}
-  .fys-cell.big{width:min(52vw,28vh)}
-  .fys-board.sm{width:min(94vw, calc((100vh - 430px) * 16 / 9))}
-  .fys-num{font-size:min(10vw,6vh)}
+  .fys-top{padding:8px 10px; gap:6px}
+  .fys-tools button{font-size:13px; padding:6px 8px}
+  .fys-cell{width:var(--cw,min(14cqw,20cqh))}
+  .fys-opt .fys-cell, .fys-stage.pat .fys-opt .fys-cell, .fys-stage.sh .fys-opt .fys-cell{width:var(--ow,min(20cqw,22cqh))}
+  .fys-stage.mem .fys-opt .fys-cell{width:var(--ow,min(40cqw,40cqh))}
+  .fys-stage.mem .fys-opts{flex-wrap:wrap; gap:6cqw}
+  .fys-cell.big{width:min(70cqw,46cqh)}
+}
+@media (max-width:700px){
+  .fys-bottom{grid-template-columns:1fr 1.3fr 1fr; gap:8px; padding:6px 10px calc(10px + env(safe-area-inset-bottom))}
+  .fys-bottom > .fys-say{grid-column:1/-1; grid-row:2}
+  .fys-bottom > .fys-btn[data-prev]{grid-column:1; grid-row:3}
+  .fys-bottom > .fys-btn[data-go]{grid-column:2; grid-row:3}
+  .fys-bottom > .fys-btn[data-alt]{grid-column:3; grid-row:3}
+  .fys-btn, .fys-btn.go{font-size:15px; padding:10px 4px}
 }
 @media (prefers-reduced-motion: reduce){
   .fys.revealed .fys-sym.hit{animation:none; transform:scale(calc(var(--s,1)*1.2)) rotate(var(--r,0deg))}
@@ -475,34 +467,50 @@ window.DeckPlayer = (function () {
   }
 
   /* --- 找相同：16:9 畫板，x/y 為中心點佔寬高比例，s 為邊長佔寬度比例 --- */
-  var BOARD_AR = 16 / 9;
+  var BOARD_AR = 2.1;   // 畫板比投影片更寬一點，扣掉上下按鈕列後剛好填滿螢幕
   function renderBoard(el, items, images, opts) {
     opts = opts || {};
-    var cls = opts.cls || 'sym', ansKey = opts.answerKey, html = '';
-    items.forEach(function (it) {
-      var hit = ansKey && symKey(it.sym) === ansKey;
-      var w = it.s * 100, h = it.s * BOARD_AR * 100;
-      html += '<div class="' + cls + (hit ? ' hit' : '') + '" style="left:' + (it.x * 100 - w / 2).toFixed(3) +
+    var cls = opts.cls || 'sym', ansKey = opts.answerKey, ar = opts.ar || BOARD_AR, html = '';
+    // 數一數：目標依「由上到下、由左到右」編號
+    var order = {};
+    if (opts.number) {
+      items.map(function (it, k) { return { k: k, it: it }; })
+        .filter(function (o) { return symKey(o.it.sym) === ansKey; })
+        .sort(function (a, b) { return Math.abs(a.it.y - b.it.y) > 0.08 ? a.it.y - b.it.y : a.it.x - b.it.x; })
+        .forEach(function (o, n) { order[o.k] = n + 1; });
+    }
+    items.forEach(function (it, k) {
+      var hit = it.diff || (ansKey && symKey(it.sym) === ansKey);
+      var w = it.s * 100, h = it.s * ar * 100;
+      html += '<div class="' + cls + (hit ? ' hit' : '') + (it.ghost ? ' ghost' : '') + '"' +
+        (order[k] ? ' data-n="' + order[k] + '"' : '') + ' style="left:' + (it.x * 100 - w / 2).toFixed(3) +
         '%;top:' + (it.y * 100 - h / 2).toFixed(3) + '%;width:' + w.toFixed(3) + '%;height:' + h.toFixed(3) +
-        '%;--r:' + it.rot + 'deg;--s:1;transform:rotate(' + it.rot + 'deg)">' + symSVG(it.sym, images) + '</div>';
+        '%;--r:' + it.rot + 'deg;--s:' + (it.k || 1) + ';transform:rotate(' + it.rot + 'deg) scale(' + (it.k || 1) + ')">' +
+        symSVG(it.sym, images) + '</div>';
     });
     el.innerHTML = html;
+  }
+  /* 影子配對的大圖：剪影，或放大其中一角 */
+  function shadowCellHTML(q, images, cls) {
+    var z = q.zoom;
+    return '<div class="fys-cell ' + (cls || '') + (z ? ' zoom' : ' shadow') + '"' +
+      (z ? ' style="--zx:' + (z.x * 100).toFixed(0) + '%;--zy:' + (z.y * 100).toFixed(0) + '%;--zk:' + z.k + '"' : '') +
+      ' data-shadow>' + cellInner(q.shadow, images) + '</div>';
   }
 
   var SAY = {
     match:   ['左邊和右邊，找出<b>唯一相同</b>的圖案', '答案是<b>這一個</b>！'],
     missing: ['左邊原本有，右邊<b>少了哪一個</b>？', '不見的是<b>這一個</b>！'],
     twin:    ['同一個畫面裡，哪<b>兩個一模一樣</b>？', '就是這<b>一對</b>！'],
-    odd:     ['大家都一樣，哪<b>一個不一樣</b>？', '不一樣的是<b>這一個</b>！'],
     shadow:  ['這是<b>誰的影子</b>？', ''],
     memory:  ['請<b>記住</b>畫面上的圖案', '剛剛<b>有出現</b>的是哪一個？']
   };
-  var OPT_GAMES = { pattern: 1, count: 1, shadow: 1, memory: 1 };
+  var OPT_GAMES = { pattern: 1, shadow: 1, memory: 1 };
   function optsHTML(q, images) {
     var html = '';
     q.options.forEach(function (c, i) {
       html += '<button type="button" class="fys-opt' + (i === q.answerIndex ? ' hit' : '') + '">' +
-        cellHTML(c, images) + '<span class="lab">' + '①②③④'.charAt(i) + '</span></button>';
+        cellHTML(c, images) + '<span class="lab">' + (i + 1) + '</span></button>';
     });
     return html;
   }
@@ -581,27 +589,27 @@ window.DeckPlayer = (function () {
             '<div class="fys-seq" data-seq></div>' +
             '<div class="fys-opts" data-opts></div>' +
           '</div>'
-        : deck.game === 'twin' || deck.game === 'odd'
+        : deck.game === 'twin' || deck.game === 'count'
         ? '<div class="fys-stage"><div class="fys-board" data-board></div></div>'
-        : deck.game === 'count'
-        ? '<div class="fys-stage col"><div class="fys-board sm" data-board></div><div class="fys-opts" data-opts></div></div>'
+        : deck.game === 'odd'
+        ? '<div class="fys-stage duo pair"><div class="fys-board q43" data-left></div><div class="fys-board q43" data-right></div></div>'
         : deck.game === 'shadow'
-        ? '<div class="fys-stage col"><div class="fys-cell big shadow" data-shadow></div><div class="fys-opts" data-opts></div></div>'
+        ? '<div class="fys-stage col sh"><div data-shadowbox></div><div class="fys-opts" data-opts></div></div>'
         : deck.game === 'memory'
         ? '<div class="fys-stage col mem"><div class="fys-board" data-board></div><div class="fys-opts" data-opts hidden></div></div>'
         : deck.game === 'missing'
-        ? '<div class="fys-stage">' +
+        ? '<div class="fys-stage duo">' +
             '<div class="fys-col"><span class="fys-cap">原本</span><div class="fys-card" data-left></div></div>' +
             '<div class="fys-split"><span class="bar"></span><span class="q">？</span><span class="bar"></span></div>' +
             '<div class="fys-col"><span class="fys-cap">現在</span><div class="fys-card" data-right></div></div>' +
           '</div>'
-        : '<div class="fys-stage">' +
+        : '<div class="fys-stage duo">' +
             '<div class="fys-card" data-left></div>' +
             '<div class="fys-split"><span class="bar"></span><span class="q">？</span><span class="bar"></span></div>' +
             '<div class="fys-card" data-right></div>' +
           '</div>') +
       '<div class="fys-bottom">' +
-        (deck.game === 'pattern' ? '<p class="fys-rule" data-rule></p>' : '') +
+        '<p class="fys-rule" data-rule></p>' +
         '<p class="fys-say" data-say></p>' +
         '<button type="button" class="fys-btn" data-prev>◀ 上一題</button>' +
         '<button type="button" class="fys-btn go" data-go>公布答案</button>' +
@@ -665,7 +673,7 @@ window.DeckPlayer = (function () {
       var opts = '';
       q.options.forEach(function (c, i) {
         opts += '<button type="button" class="fys-opt' + (i === q.answerIndex ? ' hit' : '') + '">' +
-          cellHTML(c, self.images) + '<span class="lab">' + '①②③④'.charAt(i) + '</span></button>';
+          cellHTML(c, self.images) + '<span class="lab">' + (i + 1) + '</span></button>';
       });
       this.$('opts').innerHTML = opts;
       Array.prototype.forEach.call(this.$('opts').children, function (b) {
@@ -674,13 +682,17 @@ window.DeckPlayer = (function () {
       this.$('rule').textContent = '';
       this.$('say').innerHTML = '照著規律，<b>下一個</b>是哪一個？';
       this.fit();
-    } else if (this.deck.game === 'twin' || this.deck.game === 'odd') {
-      renderBoard(this.$('board'), q.items, this.images, { cls: 'fys-sym', answerKey: q.answer });
+    } else if (this.deck.game === 'twin' || this.deck.game === 'count') {
+      renderBoard(this.$('board'), q.items, this.images, { cls: 'fys-sym', answerKey: q.answer, number: this.deck.game === 'count' });
+      this.$('say').innerHTML = this.msg(0);
+    } else if (this.deck.game === 'odd') {
+      renderBoard(this.$('left'), q.left, this.images, { cls: 'fys-sym', ar: 4 / 3 });
+      renderBoard(this.$('right'), q.right, this.images, { cls: 'fys-sym', ar: 4 / 3 });
       this.$('say').innerHTML = this.msg(0);
     } else if (OPT_GAMES[this.deck.game]) {
       this.phase = 0;
       if (this.$('board')) renderBoard(this.$('board'), q.items, this.images, { cls: 'fys-sym', answerKey: q.answer });
-      if (this.$('shadow')) this.$('shadow').innerHTML = cellInner(q.shadow, this.images);
+      if (this.$('shadowbox')) this.$('shadowbox').innerHTML = shadowCellHTML(q, this.images, 'big');
       this.$('opts').innerHTML = optsHTML(q, this.images);
       Array.prototype.forEach.call(this.$('opts').children, function (b) {
         b.addEventListener('click', function () { self.revealed ? self.go(1) : self.reveal(); });
@@ -706,11 +718,15 @@ window.DeckPlayer = (function () {
   Player.prototype.msg = function (k) {
     var g = this.deck.game, q = this.deck.questions[this.i];
     if (g === 'count') {
-      return k ? '總共有 <b>' + q.options[q.answerIndex].num + ' 個</b>！'
-        : '<span class="fys-tgt">' + symSVG(q.target, this.images) + '</span> 有<b>幾個</b>？';
+      return k ? '總共有 <b>' + q.n + ' 個</b>！'
+        : '<span class="fys-tgt">' + symSVG(q.target, this.images) + '</span> 有<b>幾個</b>？請大家一起數';
     }
+    if (g === 'odd') {
+      return k ? '就是這 <b>' + q.n + ' 個</b>地方！' : '這兩張圖有 <b>' + q.n + ' 個</b>地方不一樣，找出來！';
+    }
+    if (g === 'shadow' && !k && q.zoom) return '放大看看，這是<b>誰</b>？';
     if (g === 'memory' && this.phase === 1 && !k) return SAY.memory[1];
-    if (k && OPT_GAMES[g]) return '答案是 <b>' + '①②③④'.charAt(q.answerIndex) + '</b>';
+    if (k && OPT_GAMES[g]) return '答案是 <b>' + (q.answerIndex + 1) + ' 號</b>';
     return (SAY[g] || SAY.match)[k];
   };
 
@@ -762,7 +778,7 @@ window.DeckPlayer = (function () {
       blank.classList.add('filled');
       blank.innerHTML = '<em>？</em>' + cellInner(q.options[q.answerIndex], this.images);
       this.$('rule').textContent = '規律：' + q.rule;
-      this.$('say').innerHTML = '答案是 <b>' + '①②③④'.charAt(q.answerIndex) + '</b>';
+      this.$('say').innerHTML = '答案是 <b>' + (q.answerIndex + 1) + ' 號</b>';
     } else {
       this.$('say').innerHTML = this.msg(1);
     }
@@ -828,6 +844,7 @@ window.DeckPlayer = (function () {
     renderDisc: renderDisc,
     renderBoard: renderBoard,
     cellInner: cellInner,
+    shadowCellHTML: shadowCellHTML,
     BOARD_AR: BOARD_AR,
     cellHTML: cellHTML,
     symSVG: symSVG,
@@ -914,6 +931,10 @@ window.DeckPlayer = (function () {
             <button type="button" class="btn" id="pickBtn">選擇圖片</button>
           </div>
           <div class="mygrid" id="myGrid"></div>
+          <div class="cutbar">
+            <button type="button" class="btn" id="cutBtn">✂ 自動去背</button>
+            <span id="cutNote">適合白底或單色背景的照片；去背後「影子配對」才能玩剪影。</span>
+          </div>
           <div class="label" style="margin-top:16px">圖片外框</div>
           <div class="seg" id="segShape" role="group" aria-label="上傳圖片的外框樣式">
             <button type="button" data-shape="plain" aria-pressed="false">原圖</button>
@@ -955,9 +976,25 @@ window.DeckPlayer = (function () {
 
         <div id="oddOnly" hidden>
           <div class="field">
-            <div class="label">畫面圖案數量 <b id="oVal">15</b></div>
-            <input type="range" id="oRange" min="6" max="30" step="1" value="15">
-            <div class="ticks"><span>6 最簡單</span><span>30 最困難</span></div>
+            <div class="label">每張圖的圖案數量 <b id="oVal">10</b></div>
+            <input type="range" id="oRange" min="5" max="16" step="1" value="10">
+            <div class="ticks"><span>5 最簡單</span><span>16 最困難</span></div>
+          </div>
+          <div class="field">
+            <div class="label">不一樣的地方 <b id="dVal">3</b></div>
+            <input type="range" id="dRange" min="1" max="5" step="1" value="3">
+            <div class="ticks"><span>1 處</span><span>5 處</span></div>
+          </div>
+        </div>
+
+        <div id="shadowOnly" hidden>
+          <div class="field">
+            <div class="label">出題方式</div>
+            <div class="seg" id="segShadow" style="grid-template-columns:repeat(2,1fr)" role="group" aria-label="影子配對出題方式">
+              <button type="button" data-mode="sil" aria-pressed="true">黑色剪影</button>
+              <button type="button" data-mode="zoom" aria-pressed="false">局部放大</button>
+            </div>
+            <p class="fhint" id="shadowHint"></p>
           </div>
         </div>
 
@@ -1059,22 +1096,26 @@ window.DeckPlayer = (function () {
     { id: 'face',   name: '表情',     list: '😀😃😄😁😆😅😂🙂😉😊😇🥰😍🤩😘😋😜🤪🤗🤔🤨😐😴😎' }
   ];
   var SLIDE_THEMES = [
-    { id: 'moss', name: '青苔大地', note: '深青苔底、米白卡、沙金重點，沉穩清幽，投影不刺眼',
-      v: { stage: '#1F3A33', card: '#F6F1E4', 'card-line': '#1F3A33', hi: '#E3B76A', hi2: '#D07A4B',
-           txt: '#EEF4EC', 'txt-2': '#A9C3B6', line2: '#3E6157', btn: '#2C4C43', btnh: '#365B51',
-           blank: '#28473F', arrow: '#5E8579', goTxt: '#2A1C0E' } },
+    { id: 'ivory', name: '米白繽紛', note: '米白底、白卡、彩色重點，明亮乾淨，教室開燈也清楚',
+      v: { stage: '#FBF7EE', card: '#FFFFFF', 'card-line': '#3A3A48', hi: '#D6336C', hi2: '#F03E3E',
+           txt: '#2A2A35', 'txt-2': '#6B6B7A', line2: '#E3DCCB', btn: '#EFE9DC', btnh: '#E5DECF',
+           blank: '#F3EEE2', arrow: '#B9B2A2', goTxt: '#FFFFFF' } },
     { id: 'mist', name: '晨霧山嵐', note: '淺鼠尾草底、白卡青字，清爽明亮，教室開燈也清楚',
       v: { stage: '#E7EEE2', card: '#FFFFFF', 'card-line': '#2E4A40', hi: '#9A5A2B', hi2: '#C0582E',
            txt: '#22382F', 'txt-2': '#58705F', line2: '#BFCDB8', btn: '#D8E3CF', btnh: '#CAD8C0',
            blank: '#DCE6D3', arrow: '#8EA391', goTxt: '#FFFFFF' } },
-    { id: 'ink', name: '墨青夜', note: '深底米卡，投影對比最高，關燈不刺眼',
-      v: { stage: '#0A1F25', card: '#FBF4E6', 'card-line': '#0A1F25', hi: '#F4A93C', hi2: '#E8552D',
-           txt: '#F2F7F7', 'txt-2': '#9FBCC2', line2: '#2E5560', btn: '#1D3F49', btnh: '#27505C',
-           blank: '#14323B', arrow: '#3C6A76', goTxt: '#26170A' } },
     { id: 'paper', name: '紙感日光', note: '淺底墨字，教室燈全開也看得清楚',
       v: { stage: '#F3ECDD', card: '#FFFFFF', 'card-line': '#2B3A3F', hi: '#B45309', hi2: '#C2410C',
            txt: '#1F3338', 'txt-2': '#5C7278', line2: '#CDC0A8', btn: '#E7DCC6', btnh: '#DBCFB5',
            blank: '#E8DFCB', arrow: '#A79880', goTxt: '#FFFFFF' } },
+    { id: 'moss', name: '青苔大地', note: '深青苔底、米白卡、沙金重點，沉穩清幽，投影不刺眼',
+      v: { stage: '#1F3A33', card: '#F6F1E4', 'card-line': '#1F3A33', hi: '#E3B76A', hi2: '#D07A4B',
+           txt: '#EEF4EC', 'txt-2': '#A9C3B6', line2: '#3E6157', btn: '#2C4C43', btnh: '#365B51',
+           blank: '#28473F', arrow: '#5E8579', goTxt: '#2A1C0E' } },
+    { id: 'ink', name: '墨青夜', note: '深底米卡，投影對比最高，關燈不刺眼',
+      v: { stage: '#0A1F25', card: '#FBF4E6', 'card-line': '#0A1F25', hi: '#F4A93C', hi2: '#E8552D',
+           txt: '#F2F7F7', 'txt-2': '#9FBCC2', line2: '#2E5560', btn: '#1D3F49', btnh: '#27505C',
+           blank: '#14323B', arrow: '#3C6A76', goTxt: '#26170A' } },
     { id: 'warm', name: '暖木', note: '暖棕底奶油卡，氣氛柔和不緊張',
       v: { stage: '#2B1B12', card: '#FFF3E0', 'card-line': '#2B1B12', hi: '#FFB020', hi2: '#E04E1B',
            txt: '#FFF1E2', 'txt-2': '#C7A88F', line2: '#5A3E2B', btn: '#40291C', btnh: '#563A28',
@@ -1111,13 +1152,16 @@ window.DeckPlayer = (function () {
     imageOrder: [],
     imageStyle: 'round',
     game: 'missing',
-    slideTheme: 'moss',
+    slideTheme: 'ivory',
     level: 2,
     total: 6,
     nMiss: 6,
     keepPos: false,
     nTwin: 12,
-    nOdd: 15,
+    nOdd: 10,
+    nDiff: 3,
+    shadowMode: 'sil',
+    imgAlpha: {},
     nCount: 12,
     nMem: 4
   };
@@ -1209,7 +1253,7 @@ window.DeckPlayer = (function () {
     if (state.game === 'pattern') return 6;
     if (state.game === 'missing') return state.nMiss;
     if (state.game === 'twin') return state.nTwin - 1;
-    if (state.game === 'odd') return 2;
+    if (state.game === 'odd') return state.nOdd + state.nDiff;
     if (state.game === 'count') return 3;
     if (state.game === 'shadow') return 4;
     if (state.game === 'memory') return state.nMem + 3;
@@ -1250,8 +1294,8 @@ window.DeckPlayer = (function () {
   }
 
   /* ---------------- 找相同（同一個畫面）出題 ---------------- */
-  function boardLayout(m) {
-    var AR = DP.BOARD_AR;
+  function boardLayout(m, ar) {
+    var AR = ar || DP.BOARD_AR;
     var cols = Math.max(2, Math.ceil(Math.sqrt(m * AR))), rows = Math.ceil(m / cols);
     while ((cols - 1) * rows >= m && cols > 2) cols--;
     var cells = [];
@@ -1305,27 +1349,31 @@ window.DeckPlayer = (function () {
     return d;
   }
 
-  /* 找不同：一堆一樣的圖案裡，只有一個不一樣 */
+  /* 找不同：左右兩張圖幾乎一樣，有幾個地方被換掉、拿掉、變大或轉向 */
   function buildOddDeck() {
-    var p = pool(), m = state.nOdd;
-    if (p.length < 2) return null;
-    var qs = [], last = null;
+    var p = pool(), m = state.nOdd, nd = Math.min(state.nDiff, m);
+    if (p.length < m + nd) return null;
+    var qs = [];
     for (var i = 0; i < state.count; i++) {
-      var pick = pickFresh(p, last), odd = pick[0], base = pick[1];
-      if (state.source === 'shape') {
-        // 幾何圖形：同形狀換顏色，要看仔細才分得出來
-        var same = p.filter(function (x) { return x.shape === odd.shape && x.color !== odd.color; });
-        if (same.length) base = same[Math.floor(Math.random() * same.length)];
-      }
-      last = DP.symKey(odd);
-      var syms = [odd];
-      for (var k = 1; k < m; k++) syms.push(base);
-      qs.push({ answer: last, items: onBoard(shuffle(syms)) });
+      var pick = shuffle(p.slice()), syms = pick.slice(0, m), spare = pick.slice(m);
+      var slots = boardLayout(m, 4 / 3);
+      var left = syms.map(function (sy, k) { return { sym: sy, x: slots[k].x, y: slots[k].y, s: slots[k].s, rot: slots[k].rot }; });
+      var right = left.map(function (it) { return { sym: it.sym, x: it.x, y: it.y, s: it.s, rot: it.rot }; });
+      var KINDS = ['swap', 'gone', 'big', 'turn'], picks = shuffle(left.map(function (_, k) { return k; })).slice(0, nd);
+      picks.forEach(function (k, j) {
+        var kind = KINDS[(j + Math.floor(Math.random() * 4)) % 4], r = right[k];
+        if (kind === 'swap') r.sym = spare.shift();
+        else if (kind === 'gone') r.ghost = true;
+        else if (kind === 'big') r.k = 1.45;
+        else r.rot = (r.rot + 90) % 360;
+        r.diff = left[k].diff = true;
+      });
+      qs.push({ n: nd, left: left, right: right });
     }
     return wrapDeck('odd', '找不同', { count: m }, qs);
   }
 
-  /* 數一數：指定的圖案有幾個 */
+  /* 數一數：指定的圖案有幾個（不給選項，請長輩直接數） */
   function buildCountDeck() {
     var p = pool(), m = state.nCount;
     if (p.length < 3) return null;
@@ -1337,33 +1385,37 @@ window.DeckPlayer = (function () {
       var others = pick.slice(1, 1 + Math.min(4, pick.length - 1)), syms = [];
       for (var k = 0; k < t; k++) syms.push(target);
       for (k = 0; syms.length < m; k++) syms.push(others[k % others.length]);
-      var nums = [t - 2, t - 1, t + 1, t + 2, t + 3].filter(function (n) { return n >= 1; });
-      var ans = { num: t };
-      qs.push(withOptions({ answer: last, target: target, items: onBoard(shuffle(syms)) }, ans,
-        shuffle(nums).map(function (n) { return { num: n }; })));
+      qs.push({ answer: last, target: target, n: t, items: onBoard(shuffle(syms)) });
     }
     return wrapDeck('count', '數一數', { count: m }, qs);
   }
 
-  /* 影子配對：黑色剪影是哪一個 */
+  /* 影子配對：黑色剪影是哪一個；照片沒去背時改用「局部放大」 */
+  function photosNeedZoom() {
+    return state.source === 'image' && state.imageOrder.some(function (id) { return !state.imgAlpha[id]; });
+  }
+  function shadowMode() { return photosNeedZoom() ? 'zoom' : state.shadowMode; }
   function shapeOf(sym) { return sym.t === 's' ? sym.shape : DP.symKey(sym); }
   function buildShadowDeck() {
-    var p = pool();
+    var p = pool(), zoom = shadowMode() === 'zoom';
     if (p.length < 4) return null;
     var qs = [], last = null;
     for (var i = 0; i < state.count; i++) {
       var pick = pickFresh(p, last), a = pick[0], seen = {}, wrong = [];
       last = DP.symKey(a);
-      seen[shapeOf(a)] = 1;
+      seen[zoom ? DP.symKey(a) : shapeOf(a)] = 1;
       // 剪影只看輪廓，幾何圖形要挑不同形狀，不然影子都一樣
       pick.slice(1).forEach(function (x) {
-        if (wrong.length < 3 && !seen[shapeOf(x)]) { seen[shapeOf(x)] = 1; wrong.push(one(x)); }
+        var key = zoom ? DP.symKey(x) : shapeOf(x);
+        if (wrong.length < 3 && !seen[key]) { seen[key] = 1; wrong.push(one(x)); }
       });
       if (wrong.length < 3) return null;
       var ans = one(a);
-      qs.push(withOptions({ answer: last, shadow: one(a) }, ans, wrong));
+      var q = { answer: last, shadow: one(a) };
+      if (zoom) q.zoom = { x: 0.25 + Math.random() * 0.5, y: 0.25 + Math.random() * 0.5, k: 3 };
+      qs.push(withOptions(q, ans, wrong));
     }
-    return wrapDeck('shadow', '影子配對', {}, qs);
+    return wrapDeck('shadow', '影子配對', { mode: zoom ? 'zoom' : 'sil' }, qs);
   }
 
   /* 記憶考驗：先記住畫面，蓋起來後選出有出現的 */
@@ -1517,14 +1569,19 @@ window.DeckPlayer = (function () {
         q.seq.forEach(function (c) { row += DP.cellHTML(c, deck.images); });
         row += '<div class="fys-cell blank">？</div>';
         b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans">' +
-          '①②③④'.charAt(q.answerIndex) + '</span></span><span class="prow">' + row + '</span>';
+          (q.answerIndex + 1) + ' 號</span></span><span class="prow">' + row + '</span>';
+      } else if (deck.game === 'odd') {
+        b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans">' + q.n + ' 處不同</span></span>' +
+          '<span class="pair"><span class="board b43" data-l></span><span class="board b43" data-r></span></span>';
+        DP.renderBoard(b.querySelector('[data-l]'), q.left, deck.images, { ar: 4 / 3 });
+        DP.renderBoard(b.querySelector('[data-r]'), q.right, deck.images, { ar: 4 / 3 });
       } else if (deck.game === 'shadow') {
-        var srow = '<div class="fys-cell shadow">' + DP.cellInner(q.shadow, deck.images) + '</div><span class="sep">｜</span>';
+        var srow = DP.shadowCellHTML(q, deck.images, '') + '<span class="sep">｜</span>';
         q.options.forEach(function (c) { srow += DP.cellHTML(c, deck.images); });
-        b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans">' + '①②③④'.charAt(q.answerIndex) +
+        b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans">' + (q.answerIndex + 1) + ' 號' +
           '</span></span><span class="prow">' + srow + '</span>';
       } else if (q.items) {
-        var ansLabel = deck.game === 'count' ? q.options[q.answerIndex].num + ' 個' : '';
+        var ansLabel = deck.game === 'count' ? q.n + ' 個' : '';
         b.innerHTML = '<span class="no">第 ' + (i + 1) + ' 題<span class="ans" data-a></span></span>' +
           '<span class="solo"><span class="board" data-b></span></span>';
         DP.renderBoard(b.querySelector('[data-b]'), q.items, deck.images, {});
@@ -1553,7 +1610,12 @@ window.DeckPlayer = (function () {
       : deck.game === 'memory'
       ? '點任何一題可從那一題開始播放。第一次按空白鍵會把畫面蓋起來、出現選項，再按一次公布答案。下載的 PPT 每題有三頁：記憶、選項、答案。'
       : deck.game === 'shadow'
-      ? '點任何一題可從那一題開始播放。影子配對最適合輪廓清楚的主題圖示或去背圖片，照片會變成一整塊黑影。'
+      ? (deck.mode === 'zoom' ? '點任何一題可從那一題開始播放。局部放大：先只露出一角，公布答案時縮回原圖。'
+        : '點任何一題可從那一題開始播放。剪影最適合輪廓清楚的主題圖示、幾何圖形或去背圖片。')
+      : deck.game === 'odd'
+      ? '點任何一題可從那一題開始播放。兩張圖幾乎一樣，有幾個圖案被換掉、拿掉、變大或轉向，公布答案時會圈出來。'
+      : deck.game === 'count'
+      ? '點任何一題可從那一題開始播放。不給選項，請長輩直接數；公布答案時每個目標都會標上 1、2、3…'
       : '點任何一題可從那一題開始播放。播放時按空白鍵或點畫面公布答案，← → 可切換題目。';
   }
 
@@ -1714,6 +1776,12 @@ window.DeckPlayer = (function () {
       putText(ctx, String(cell.num), cx, cy + 2, { px: Math.round(size * 0.55), c: TH['card-line'], alpha: opt.alpha });
     } else if (cell) {
       var g = GRIDS_C[Math.min(4, cell.items.length)] || GRIDS_C[1];
+      if (opt.zoom) {
+        // 局部放大：以 (zx, zy) 為中心放大 k 倍，只露出格子裡的一角
+        roundPath(ctx, x, y, size, size, r); ctx.clip();
+        var zx = x + opt.zoom.x * size, zy = y + opt.zoom.y * size;
+        ctx.translate(zx, zy); ctx.scale(opt.zoom.k, opt.zoom.k); ctx.translate(-zx, -zy);
+      }
       cell.items.forEach(function (it, i) {
         var sp = g[i] || g[0], sz = sp[2] * (it.scale || 1) * size;
         ctx.save();
@@ -1748,22 +1816,21 @@ window.DeckPlayer = (function () {
     var bx = sx + (T - 1) * (cs + gap);
     drawCell(ctx, bx, sy, cs, reveal ? q.options[q.answerIndex] : null, { blank: true, ring: reveal });
 
-    putText(ctx, reveal ? '答案是 ' + '①②③④'.charAt(q.answerIndex) : '照著規律，下一個是哪一個？', W / 2, 452,
+    putText(ctx, reveal ? '答案是 ' + (q.answerIndex + 1) + ' 號' : '照著規律，下一個是哪一個？', W / 2, 452,
       { px: 42, c: reveal ? TH.hi : TH.txt });
 
     var os = 168, ogap = 66, ow = 4 * os + 3 * ogap, ox = (W - ow) / 2 + os / 2, oy = 620;
     q.options.forEach(function (c, i) {
       var hit = i === q.answerIndex, cx = ox + i * (os + ogap);
       drawCell(ctx, cx, oy, os, c, { alpha: reveal && !hit ? 0.2 : 1, ring: reveal && hit });
-      putText(ctx, '①②③④'.charAt(i), cx, oy + os / 2 + 34,
-        { px: 34, c: reveal && hit ? TH.hi : TH['txt-2'], alpha: reveal && !hit ? 0.2 : 1 });
+      drawBadge(ctx, cx - os / 2 + 6, oy - os / 2 + 6, i, 32, reveal && !hit ? 0.2 : 1);
     });
 
     if (reveal) putText(ctx, '規律：' + q.rule, W / 2, H - 52, { px: 32, wt: 700, c: TH['txt-2'] });
   }
 
   /* 文字統一走 putText：預覽／圖片時直接畫上去；匯出 PPT 時收進 TEXTS，變成可編輯的文字方塊 */
-  var TEXTS = null;
+  var TEXTS = null, EXP = null;
   function putText(ctx, runs, x, y, o) {
     o = o || {};
     if (typeof runs === 'string') runs = [{ t: runs }];
@@ -1796,7 +1863,9 @@ window.DeckPlayer = (function () {
   /* 封面與結尾頁 */
   function drawCover(ctx, d, title, sub) {
     ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = TH.hi; roundPath(ctx, W / 2 - 60, 486, 120, 8, 4); ctx.fill();
+    ['#E5484D', '#F5A300', '#2EA36A', '#2F7FE0', '#4F51D8', '#9450C9'].forEach(function (c, i) {
+      ctx.fillStyle = c; roundPath(ctx, W / 2 - 150 + i * 50, 486, 46, 10, 5); ctx.fill();
+    });
     var syms = [], seen = {};
     d.questions.forEach(function (q) {
       var src = q.items || q.left || (q.seq || q.options).map(function (c) { return c.items[0]; });
@@ -1834,7 +1903,7 @@ window.DeckPlayer = (function () {
     drawDisc(ctx, DCX1, DCY, q, q.left, reveal);
     drawDisc(ctx, DCX2, DCY, q, q.right, reveal);
 
-    var miss = deck.game === 'missing';
+    var miss = (EXP || deck).game === 'missing';
     if (miss) {
       putText(ctx, '原  本', DCX1, 124, { px: 34, c: TH['txt-2'] });
       putText(ctx, '現  在', DCX2, 124, { px: 34, c: TH['txt-2'] });
@@ -1846,75 +1915,106 @@ window.DeckPlayer = (function () {
     }
   }
 
-  function drawBoardOn(ctx, q, reveal, BX, BY, BW) {
-    var BH = BW / DP.BOARD_AR;
+  /* 畫板：items 用 0～1 的座標；hitFn 決定哪些要圈起來 */
+  function drawBoardOn(ctx, items, reveal, BX, BY, BW, o) {
+    o = o || {};
+    var ar = o.ar || DP.BOARD_AR, BH = BW / ar;
+    var isHit = o.hit || function () { return false; };
     ctx.save();
-    roundPath(ctx, BX, BY, BW, BH, 34);
+    roundPath(ctx, BX, BY, BW, BH, 30);
     ctx.fillStyle = TH.card; ctx.fill();
-    ctx.lineWidth = 10; ctx.strokeStyle = TH.line2; ctx.stroke();
+    ctx.lineWidth = 8; ctx.strokeStyle = TH['card-line']; ctx.stroke();
     ctx.clip();
     var hits = [];
-    q.items.forEach(function (it) {
-      var hit = DP.symKey(it.sym) === q.answer;
+    items.forEach(function (it) {
+      var hit = isHit(it);
       if (hit) hits.push(it);
+      if (it.ghost && !reveal) return;
       ctx.save();
-      ctx.globalAlpha = reveal ? (hit ? 1 : 0.16) : 1;
+      ctx.globalAlpha = reveal ? (hit ? (it.ghost ? 0.55 : 1) : 0.16) : 1;
       ctx.translate(BX + it.x * BW, BY + it.y * BH);
       ctx.rotate(it.rot * Math.PI / 180);
-      drawSym(ctx, it.sym, it.s * BW * (reveal && hit ? 1.2 : 1));
+      drawSym(ctx, it.sym, it.s * BW * (it.k || 1) * (reveal && hit && !o.noGrow ? 1.15 : 1));
       ctx.restore();
     });
     if (reveal) {
       hits.forEach(function (it) {
         ctx.beginPath();
-        ctx.arc(BX + it.x * BW, BY + it.y * BH, it.s * BW * 0.62 + 10, 0, Math.PI * 2);
-        ctx.lineWidth = 9; ctx.strokeStyle = TH.hi2; ctx.stroke();
+        ctx.arc(BX + it.x * BW, BY + it.y * BH, it.s * BW * (it.k || 1) * 0.62 + 10, 0, Math.PI * 2);
+        ctx.lineWidth = 8; ctx.strokeStyle = TH.hi2;
+        if (it.ghost) ctx.setLineDash([16, 10]);
+        ctx.stroke(); ctx.setLineDash([]);
       });
+      if (o.number) {
+        hits.slice().sort(function (a, b) { return Math.abs(a.y - b.y) > 0.08 ? a.y - b.y : a.x - b.x; }).forEach(function (it, n) {
+          var r = it.s * BW * 0.62 + 10, cx = BX + it.x * BW + r * 0.72, cy = BY + it.y * BH - r * 0.72;
+          ctx.beginPath(); ctx.arc(cx, cy, 24, 0, Math.PI * 2); ctx.fillStyle = TH.hi2; ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.font = '900 30px ' + TEXT_FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(String(n + 1), cx, cy + 1);
+        });
+      }
     }
     ctx.restore();
   }
+  function keyHit(q) { return function (it) { return DP.symKey(it.sym) === q.answer; }; }
 
-  var BOARD_TEXT = {
-    twin: ['同一個畫面裡，哪兩個一模一樣？', '就是圈起來的這一對！'],
-    odd: ['大家都一樣，哪一個不一樣？', '不一樣的是圈起來的這一個！']
-  };
   function drawTwinSlide(ctx, q, idx, total, reveal) {
     ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
     drawHeader(ctx, idx, total);
-    drawBoardOn(ctx, q, reveal, (W - 1140) / 2, 132, 1140);
-    var t = BOARD_TEXT[deck.game] || BOARD_TEXT.twin;
-    putText(ctx, reveal ? t[1] : t[0], W / 2, H - 52, { px: 48, c: reveal ? TH.hi : TH.txt });
+    drawBoardOn(ctx, q.items, reveal, (W - 1420) / 2, 112, 1420, { hit: keyHit(q) });
+    putText(ctx, reveal ? '就是圈起來的這一對！' : '同一個畫面裡，哪兩個一模一樣？', W / 2, H - 44,
+      { px: 46, c: reveal ? TH.hi : TH.txt });
   }
 
-  /* 四個選項排一列；剪影題的選項照常上色 */
-  function drawOptRow(ctx, q, y, size, gap, reveal, labels) {
+  /* 找不同：左右兩張 4:3 */
+  function drawSpotSlide(ctx, q, idx, total, reveal) {
+    ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
+    drawHeader(ctx, idx, total);
+    var BW = 740, gap = 40, x0 = (W - BW * 2 - gap) / 2, diff = function (it) { return it.diff; };
+    drawBoardOn(ctx, q.left, reveal, x0, 150, BW, { ar: 4 / 3, hit: diff, noGrow: true });
+    drawBoardOn(ctx, q.right, reveal, x0 + BW + gap, 150, BW, { ar: 4 / 3, hit: diff, noGrow: true });
+    putText(ctx, reveal ? '就是這 ' + q.n + ' 個地方！' : '這兩張圖有 ' + q.n + ' 個地方不一樣，找出來！', W / 2, H - 52,
+      { px: 46, c: reveal ? TH.hi : TH.txt });
+  }
+
+  var BADGE = ['#E5484D', '#2F7FE0', '#2EA36A', '#9450C9'];
+  function drawBadge(ctx, cx, cy, i, r, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha == null ? 1 : alpha;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = BADGE[i % 4]; ctx.fill();
+    ctx.lineWidth = 5; ctx.strokeStyle = '#fff'; ctx.stroke();
+    ctx.restore();
+    putText(ctx, String(i + 1), cx, cy + 2, { px: Math.round(r * 1.25), c: '#FFFFFF', alpha: alpha });
+  }
+
+  /* 四個選項排一列，左上角是彩色號碼 */
+  function drawOptRow(ctx, q, y, size, gap, reveal) {
     var n = q.options.length, row = n * size + (n - 1) * gap, x0 = (W - row) / 2 + size / 2;
     q.options.forEach(function (c, i) {
-      var hit = i === q.answerIndex, cx = x0 + i * (size + gap);
-      drawCell(ctx, cx, y, size, c, { alpha: reveal && !hit ? 0.2 : 1, ring: reveal && hit });
-      if (labels) putText(ctx, '①②③④'.charAt(i), cx, y + size / 2 + 32,
-        { px: 32, c: reveal && hit ? TH.hi : TH['txt-2'], alpha: reveal && !hit ? 0.2 : 1 });
+      var hit = i === q.answerIndex, cx = x0 + i * (size + gap), al = reveal && !hit ? 0.2 : 1;
+      drawCell(ctx, cx, y, size, c, { alpha: al, ring: reveal && hit });
+      drawBadge(ctx, cx - size / 2 + 6, y - size / 2 + 6, i, Math.max(26, size * 0.17), al);
     });
   }
 
   function drawCountSlide(ctx, q, idx, total, reveal) {
     ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
     drawHeader(ctx, idx, total);
-    drawBoardOn(ctx, q, reveal, (W - 880) / 2, 112, 880);
-    var ty = 650;
-    drawCell(ctx, W / 2 - 150, ty, 84, { items: [{ sym: q.target, rot: 0, scale: 1 }] });
-    putText(ctx, reveal ? '總共有 ' + q.options[q.answerIndex].num + ' 個！' : '有幾個？', W / 2 + 40, ty,
+    drawBoardOn(ctx, q.items, reveal, (W - 1420) / 2, 112, 1420, { hit: keyHit(q), number: true });
+    var ty = H - 44;
+    drawCell(ctx, W / 2 - 230, ty, 66, { items: [{ sym: q.target, rot: 0, scale: 1 }] });
+    putText(ctx, reveal ? '總共有 ' + q.n + ' 個！' : '有幾個？請大家一起數', W / 2 + 30, ty,
       { px: 46, c: reveal ? TH.hi : TH.txt });
-    drawOptRow(ctx, q, 790, 120, 70, reveal, false);
   }
 
   function drawShadowSlide(ctx, q, idx, total, reveal) {
     ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
     drawHeader(ctx, idx, total);
-    drawCell(ctx, W / 2, 290, 300, q.shadow, { sil: !reveal, ring: reveal });
-    putText(ctx, reveal ? '答案是 ' + '①②③④'.charAt(q.answerIndex) : '這是誰的影子？', W / 2, 490,
+    drawCell(ctx, W / 2, 300, 330, q.shadow, { sil: !reveal && !q.zoom, zoom: reveal ? null : q.zoom, ring: reveal });
+    putText(ctx, reveal ? '答案是 ' + (q.answerIndex + 1) + ' 號' : (q.zoom ? '放大看看，這是誰？' : '這是誰的影子？'), W / 2, 518,
       { px: 46, c: reveal ? TH.hi : TH.txt });
-    drawOptRow(ctx, q, 650, 160, 70, reveal, true);
+    drawOptRow(ctx, q, 700, 180, 80, reveal);
   }
 
   /* 記憶考驗每題三頁：0 記住畫面、1 出選項、2 公布答案 */
@@ -1922,12 +2022,12 @@ window.DeckPlayer = (function () {
     ctx.fillStyle = TH.stage; ctx.fillRect(0, 0, W, H);
     drawHeader(ctx, idx, total);
     if (phase === 0) {
-      drawBoardOn(ctx, q, false, (W - 1140) / 2, 132, 1140);
-      putText(ctx, '請記住畫面上的圖案', W / 2, H - 52, { px: 48 });
+      drawBoardOn(ctx, q.items, false, (W - 1420) / 2, 112, 1420);
+      putText(ctx, '請記住畫面上的圖案', W / 2, H - 44, { px: 46 });
       return;
     }
-    drawOptRow(ctx, q, 400, 230, 70, phase === 2, true);
-    putText(ctx, phase === 2 ? '答案是 ' + '①②③④'.charAt(q.answerIndex) : '剛剛有出現的是哪一個？', W / 2, 700,
+    drawOptRow(ctx, q, 420, 270, 70, phase === 2);
+    putText(ctx, phase === 2 ? '答案是 ' + (q.answerIndex + 1) + ' 號' : '剛剛有出現的是哪一個？', W / 2, 720,
       { px: 50, c: phase === 2 ? TH.hi : TH.txt });
   }
 
@@ -2145,9 +2245,9 @@ window.DeckPlayer = (function () {
     if (deck.game === 'pattern') return '規律接龍_' + deckLabel() + '_' + LEVEL_NAME[state.level] + '_' + state.total + '格_' + q;
     if (deck.game === 'missing') return '找缺少_' + deckLabel() + '_' + deck.perSide + '個_' + q;
     if (deck.game === 'twin') return '找相同_' + deckLabel() + '_' + deck.count + '個_' + q;
-    if (deck.game === 'odd') return '找不同_' + deckLabel() + '_' + deck.count + '個_' + q;
+    if (deck.game === 'odd') return '找不同_' + deckLabel() + '_' + state.nDiff + '處_' + q;
     if (deck.game === 'count') return '數一數_' + deckLabel() + '_' + deck.count + '個_' + q;
-    if (deck.game === 'shadow') return '影子配對_' + deckLabel() + '_' + q;
+    if (deck.game === 'shadow') return '影子配對_' + deckLabel() + '_' + (deck.mode === 'zoom' ? '局部放大' : '剪影') + '_' + q;
     if (deck.game === 'memory') return '記憶考驗_' + deckLabel() + '_記' + deck.count + '個_' + q;
     return '找一樣_' + deckLabel() + '_每邊' + deck.perSide + '個_' + q;
   }
@@ -2158,8 +2258,9 @@ window.DeckPlayer = (function () {
   function deckTitle() { var v = $('titleIn').value.trim(); return v || autoTitle(); }
   function deckSub() {
     var d = deck, extra = d.game === 'pattern' ? LEVEL_NAME[state.level] + '・' + state.total + ' 格'
-      : d.game === 'twin' || d.game === 'odd' || d.game === 'count' ? '每頁 ' + d.count + ' 個圖案'
-      : d.game === 'memory' ? '每題記住 ' + d.count + ' 個' : d.game === 'shadow' ? '四選一'
+      : d.game === 'odd' ? '每張 ' + d.count + ' 個圖案・' + state.nDiff + ' 處不同'
+      : d.game === 'twin' || d.game === 'count' ? '每頁 ' + d.count + ' 個圖案'
+      : d.game === 'memory' ? '每題記住 ' + d.count + ' 個' : d.game === 'shadow' ? (d.mode === 'zoom' ? '局部放大' : '黑色剪影') + '・四選一'
       : (d.game === 'missing' ? '原本 ' : '每邊 ') + d.perSide + ' 個圖案';
     return extra + '・共 ' + d.questions.length + ' 題';
   }
@@ -2169,13 +2270,16 @@ window.DeckPlayer = (function () {
     var btn = $('pptBtn');
     btn.disabled = true;
     var old = btn.innerHTML;
-    function done() { TEXTS = null; btn.disabled = false; btn.innerHTML = old; }
+    function done() { TEXTS = null; EXP = null; btn.disabled = false; btn.innerHTML = old; }
     say('正在產生投影片…');
     TH = deck.theme || SLIDE_THEMES[0].v;
-    var DRAW = { pattern: drawPatternSlide, twin: drawTwinSlide, odd: drawTwinSlide, count: drawCountSlide,
+    var DRAW = { pattern: drawPatternSlide, twin: drawTwinSlide, odd: drawSpotSlide, count: drawCountSlide,
       shadow: drawShadowSlide, memory: drawMemorySlide };
+    // 匯出要好幾秒：檔名和題目在按下去的當下就固定，中途切換遊戲也不會錯
+    var fname = fileBase() + '.pptx', title = deckTitle(), sub = deckSub();
+    EXP = deck;
     var d = deck, draw = DRAW[d.game] || drawSlide, steps = d.game === 'memory' ? [0, 1, 2] : [false, true];
-    var pages = [function (ctx) { drawCover(ctx, d, deckTitle(), deckSub()); }];
+    var pages = [function (ctx) { drawCover(ctx, d, title, sub); }];
     d.questions.forEach(function (q, qi) {
       steps.forEach(function (rv) { pages.push(function (ctx) { draw(ctx, q, qi, d.questions.length, rv); }); });
     });
@@ -2189,7 +2293,7 @@ window.DeckPlayer = (function () {
         if (i >= pages.length) {
           btn.textContent = '打包中…';
           var blob = buildPptx(slides);
-          return saveFile(fileBase() + '.pptx', blob).then(done);
+          return saveFile(fname, blob).then(done);
         }
         TEXTS = [];
         pages[i](ctx);
@@ -2219,7 +2323,7 @@ window.DeckPlayer = (function () {
       '<meta name="viewport" content="width=device-width,initial-scale=1">' +
       '<title>' + title + '</title>' +
       '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Noto+Serif+TC:wght@900&display=swap">' +
-      '<style>html,body{margin:0;height:100%;background:' + (deck.theme ? deck.theme.stage : '#1F3A33') + ';overflow:hidden}</style>' +
+      '<style>html,body{margin:0;height:100%;background:' + (deck.theme ? deck.theme.stage : '#FBF7EE') + ';overflow:hidden}</style>' +
       '<style>' + css + '</style></head><body><div id="root"></div>' +
       '<script>window.__DECK__=' + json + ';<\/script>' +
       '<script>' + js + '<\/script>' +
@@ -2234,9 +2338,9 @@ window.DeckPlayer = (function () {
     match: '左右兩邊各一組圖案，找出唯一相同的那一個。練視覺搜尋與注意力。',
     missing: '左邊是原本的圖案，右邊少了一個，找出不見的是哪一個。練視覺比對與短期記憶，可請長輩先記住左邊再看右邊。',
     twin: '同一個畫面裡放滿圖案，只有兩個一模一樣，找出這一對。練視覺掃描，適合帶長輩由左到右、由上到下有順序地看。',
-    odd: '畫面上放滿同一個圖案，只有一個不一樣，把它找出來。練細節辨識；選「幾何圖形」時只差在顏色，更有挑戰。',
-    count: '畫面上混著好幾種圖案，數一數指定的那一個有幾個，從四個數字選答案。練專注與數數，可以請長輩用手指一個一個點。',
-    shadow: '只給一個黑色剪影，從四個彩色圖案選出影子是誰。練形狀知覺；主題圖示或去背圖片效果最好。',
+    odd: '兩張圖幾乎一樣，有幾個圖案被換掉、拿掉、變大或轉向，把不一樣的地方找出來。練細節比對與專注力。',
+    count: '畫面上混著好幾種圖案，請長輩直接數出指定的那一個有幾個，不給選項。公布答案時每個都會標上號碼，方便一起核對。',
+    shadow: '看黑色剪影或放大的一角，從四個彩色圖案選出是誰。練形狀知覺與聯想；照片沒去背時會自動改用局部放大。',
     memory: '先看畫面記住圖案，按一下蓋起來，再從四個選項選出剛剛有出現的。練短期記憶，可以讓長輩先說出記得哪些。',
     pattern: '一排圖案照規律排下去，最後一格空白，從四個選項選出下一個。練歸納推理，答對之後請長輩說出規律更有價值。'
   };
@@ -2255,6 +2359,16 @@ window.DeckPlayer = (function () {
     $('missingOnly').hidden = state.game !== 'missing';
     $('twinOnly').hidden = state.game !== 'twin';
     $('oddOnly').hidden = state.game !== 'odd';
+    $('shadowOnly').hidden = state.game !== 'shadow';
+    var forced = photosNeedZoom(), mode = shadowMode();
+    Array.prototype.forEach.call($('segShadow').children, function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
+      b.disabled = forced && b.dataset.mode === 'sil';
+    });
+    $('shadowHint').textContent = forced
+      ? '有照片還沒去背，剪影會整塊變黑，所以先用「局部放大」。到「我的圖片」按「自動去背」後就能玩剪影。'
+      : mode === 'zoom' ? '把圖片放大三倍只露出一角，請長輩猜猜看是誰；公布答案時會慢慢縮回原圖。'
+      : '只露出黑色輪廓，從四個選項選出影子是誰。主題圖示、幾何圖形或去背圖片都適合。';
     $('countOnly').hidden = state.game !== 'count';
     $('memoryOnly').hidden = state.game !== 'memory';
     $('switchField').hidden = pat || state.game === 'shadow';
@@ -2311,6 +2425,7 @@ window.DeckPlayer = (function () {
     $('shapeField').hidden = state.source !== 'shape';
     $('imageField').hidden = state.source !== 'image';
     $('needImg').textContent = String(needFor());
+    syncGameUI();
   }
 
   $('segSource').addEventListener('click', function (e) {
@@ -2346,7 +2461,14 @@ window.DeckPlayer = (function () {
     state.nTwin = +this.value; $('wVal').textContent = this.value; $('needImg').textContent = String(needFor());
   });
   $('wRange').addEventListener('change', regenerate);
-  [['oRange', 'oVal', 'nOdd'], ['cRange', 'cVal', 'nCount'], ['kRange', 'kVal', 'nMem']].forEach(function (r) {
+  $('segShadow').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-mode]');
+    if (!b) return;
+    state.shadowMode = b.dataset.mode;
+    syncGameUI();
+    regenerate();
+  });
+  [['oRange', 'oVal', 'nOdd'], ['dRange', 'dVal', 'nDiff'], ['cRange', 'cVal', 'nCount'], ['kRange', 'kVal', 'nMem']].forEach(function (r) {
     $(r[0]).addEventListener('input', function () {
       state[r[2]] = +this.value; $(r[1]).textContent = this.value; $('needImg').textContent = String(needFor());
     });
@@ -2391,13 +2513,101 @@ window.DeckPlayer = (function () {
         var id = 'img' + (++imgSeq);
         state.images[id] = rd.result;
         state.imageOrder.push(id);
-        left--;
-        if (left === 0) { renderMyGrid(); regenerate(); }
+        hasAlpha(rd.result).then(function (a) {
+          state.imgAlpha[id] = a;
+          left--;
+          if (left === 0) { renderMyGrid(); syncGameUI(); regenerate(); }
+        });
       };
       rd.onerror = function () { left--; if (left === 0) { renderMyGrid(); regenerate(); } };
       rd.readAsDataURL(f);
     });
     this.value = '';
+  });
+
+  /* ---------------- 圖片去背 ---------------- */
+  function loadImg(url) {
+    return new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = rej; im.src = url; });
+  }
+  function hasAlpha(url) {
+    return loadImg(url).then(function (im) {
+      var c = document.createElement('canvas'), n = 64;
+      c.width = c.height = n;
+      var x = c.getContext('2d'); x.drawImage(im, 0, 0, n, n);
+      var d = x.getImageData(0, 0, n, n).data, clear = 0;
+      for (var i = 3; i < d.length; i += 4) if (d[i] < 32) clear++;
+      return clear / (n * n) > 0.04;
+    }).catch(function () { return false; });
+  }
+  /* 從四邊往內灌：顏色接近邊框底色、而且一路相連的像素當成背景，挖空後裁掉多餘邊界 */
+  function removeBg(url) {
+    return loadImg(url).then(function (im) {
+      var sc = Math.min(1, 640 / Math.max(im.width, im.height));
+      var w = Math.round(im.width * sc), h = Math.round(im.height * sc);
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      var x = c.getContext('2d'); x.drawImage(im, 0, 0, w, h);
+      var img = x.getImageData(0, 0, w, h), d = img.data;
+      var br = 0, bg = 0, bb = 0, bn = 0, k;
+      for (k = 0; k < w; k++) { [k, k + (h - 1) * w].forEach(add); }
+      for (k = 0; k < h; k++) { [k * w, k * w + w - 1].forEach(add); }
+      function add(i) { br += d[i * 4]; bg += d[i * 4 + 1]; bb += d[i * 4 + 2]; bn++; }
+      br /= bn; bg /= bn; bb /= bn;
+      function dist(i, r, g, b) { var a = d[i * 4] - r, e = d[i * 4 + 1] - g, f = d[i * 4 + 2] - b; return Math.sqrt(a * a + e * e + f * f); }
+      var mark = new Uint8Array(w * h), q = [];
+      function seed(i) { if (!mark[i] && dist(i, br, bg, bb) < 70) { mark[i] = 1; q.push(i); } }
+      for (k = 0; k < w; k++) { seed(k); seed(k + (h - 1) * w); }
+      for (k = 0; k < h; k++) { seed(k * w); seed(k * w + w - 1); }
+      while (q.length) {
+        var i = q.pop(), px = i % w, py = (i - px) / w;
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (o) {
+          var nx = px + o[0], ny = py + o[1];
+          if (nx < 0 || ny < 0 || nx >= w || ny >= h) return;
+          var j = ny * w + nx;
+          if (mark[j]) return;
+          if (dist(j, d[i * 4], d[i * 4 + 1], d[i * 4 + 2]) < 22 && dist(j, br, bg, bb) < 90) { mark[j] = 1; q.push(j); }
+        });
+      }
+      var gone = 0, x0 = w, y0 = h, x1 = 0, y1 = 0;
+      for (k = 0; k < w * h; k++) {
+        if (mark[k]) { d[k * 4 + 3] = 0; gone++; continue; }
+        var kx = k % w, ky = (k - kx) / w;
+        // 邊緣柔化：緊鄰背景的像素半透明
+        if ((kx > 0 && mark[k - 1]) || (kx < w - 1 && mark[k + 1]) || (ky > 0 && mark[k - w]) || (ky < h - 1 && mark[k + w])) d[k * 4 + 3] = 150;
+        if (kx < x0) x0 = kx; if (kx > x1) x1 = kx; if (ky < y0) y0 = ky; if (ky > y1) y1 = ky;
+      }
+      var ratio = gone / (w * h);
+      if (ratio < 0.06 || ratio > 0.94) return { ok: false };
+      x.putImageData(img, 0, 0);
+      var pad = 6, cw = x1 - x0 + 1 + pad * 2, ch = y1 - y0 + 1 + pad * 2, side = Math.max(cw, ch);
+      var o = document.createElement('canvas'); o.width = o.height = side;
+      o.getContext('2d').drawImage(c, x0 - pad, y0 - pad, cw, ch, (side - cw) / 2, (side - ch) / 2, cw, ch);
+      return { ok: true, url: o.toDataURL('image/png') };
+    }).catch(function () { return { ok: false }; });
+  }
+  $('cutBtn').addEventListener('click', function () {
+    var ids = state.imageOrder.filter(function (id) { return !state.imgAlpha[id]; });
+    if (!ids.length) { say(state.imageOrder.length ? '圖片都已經是去背圖了' : '請先選擇圖片'); return; }
+    var btn = this, done = 0, ok = 0;
+    btn.disabled = true; btn.textContent = '去背中…';
+    ids.reduce(function (pr, id) {
+      return pr.then(function () {
+        return removeBg(state.images[id]).then(function (r) {
+          done++;
+          btn.textContent = '去背中 ' + done + '/' + ids.length;
+          if (r.ok) { state.images[id] = r.url; state.imgAlpha[id] = true; ok++; }
+        });
+      });
+    }, Promise.resolve()).then(function () {
+      btn.disabled = false; btn.textContent = '✂ 自動去背';
+      if (ok) {
+        // 去背後用「原圖」外框，才不會被裁成方形
+        state.imageStyle = 'plain';
+        Array.prototype.forEach.call($('segShape').children, function (c) { c.setAttribute('aria-pressed', String(c.dataset.shape === 'plain')); });
+      }
+      $('cutNote').textContent = ok === ids.length ? '全部 ' + ok + ' 張都去背完成，外框已改成「原圖」。'
+        : '完成 ' + ok + ' 張；' + (ids.length - ok) + ' 張背景太複雜，建議換成白底照片或先用其他工具去背。';
+      renderMyGrid(); syncGameUI(); regenerate();
+    });
   });
 
   function renderMyGrid() {
@@ -2408,9 +2618,12 @@ window.DeckPlayer = (function () {
       var st = state.imageStyle;
       var css = st === 'circle' ? 'object-fit:cover;border-radius:50%'
         : st === 'round' ? 'object-fit:cover;border-radius:17%' : 'object-fit:contain';
+      fig.className = state.imgAlpha[id] ? 'cut' : '';
+      fig.title = state.imgAlpha[id] ? '已去背' : '尚未去背';
       fig.innerHTML = '<img src="' + state.images[id] + '" alt="" style="' + css + '"><button type="button" title="移除">✕</button>';
       fig.querySelector('button').addEventListener('click', function () {
         delete state.images[id];
+        delete state.imgAlpha[id];
         state.imageOrder = state.imageOrder.filter(function (x) { return x !== id; });
         renderMyGrid(); regenerate();
       });
